@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================
+     COLORS — change these to re-theme the whole page
+     Tip: for an amber monitor look, set --green to #ffb000
+     ========================================================= */
+  :root {
+    --bg:      #0c0c0c;   /* screen background */
+    --green:   #33ff66;   /* main terminal text */
+    --dim:     #1f9e40;   /* secondary text */
+    --blue:    #5fafff;   /* directory names */
+    --white:   #e8e8e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 17px;
+    line-height: 1.6;
+    padding: 40px 16px;
+  }
+
+  /* faint CRT scanlines */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
+  }
+
+  .terminal {
+    max-width: 760px;
+    margin: 0 auto;
+    text-shadow: 0 0 4px rgba(51, 255, 102, 0.35);
+  }
+
+  pre.ascii {
+    font-size: clamp(7px, 2.1vw, 14px);
+    line-height: 1.15;
+    color: var(--green);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .dim    { color: var(--dim); }
+  .prompt { color: var(--white); }
+  .prompt b { color: var(--green); }
+  .line   { margin-bottom: 4px; }
+  .gap    { margin-top: 20px; }
+
+  /* ---------- Directory listing ---------- */
+  .listing { margin: 6px 0 4px; }
+  .listing a {
+    display: flex;
+    gap: 18px;
+    color: var(--blue);
+    text-decoration: none;
+    padding: 2px 6px;
+    margin-left: -6px;
+  }
+  .listing a .perm { color: var(--dim); flex-shrink: 0; }
+  .listing a .name { font-weight: 700; }
+  .listing a .desc { color: var(--dim); }
+  .listing a:hover,
+  .listing a:focus-visible {
+    background: var(--green);
+    outline: none;
+    text-shadow: none;
+  }
+  .listing a:hover *,
+  .listing a:focus-visible * { color: var(--bg); }
+
+  .cursor {
+    display: inline-block;
+    width: 10px; height: 1.1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  @media (max-width: 520px) {
+    body { font-size: 15px; padding: 24px 16px; }
+    .listing a .perm { display: none; }   /* hide permissions on phones */
+    .listing a { flex-wrap: wrap; gap: 0 12px; }
+  }
+</style>
+</head>
+<body>
+<main class="terminal">
+
+<pre class="ascii">
+ ____  _   _ ____ ___ _   _ _____ ____ ____
+| __ )| | | / ___|_ _| \ | | ____/ ___/ ___|
+|  _ \| | | \___ \| ||  \| |  _| \___ \___ \
+| |_) | |_| |___) | || |\  | |___ ___) |__) |
+|____/ \___/|____/___|_| \_|_____|____/____/
+</pre>
+
+  <!-- =====================================================
+       HEADER TEXT — edit the welcome lines here
+       ===================================================== -->
+  <p class="line dim">Huron High School &middot; Business &amp; Accounting [Version 1.0]</p>
+  <p class="line dim">No typing needed. Click a directory below to open it.</p>
+
+  <p class="line gap prompt"><b>student@huron</b>:~$ ls -l</p>
+
+  <!-- =====================================================
+       HOW TO ADD A DIRECTORY LINK:
+       Copy one <a ...>...</a> block and change:
+         href  = the folder (or file) in your GitHub repo
+         name  = what students see
+         desc  = short description
+       A link to a folder like "accounting/" opens that
+       folder's index.html automatically on GitHub Pages.
+       ===================================================== -->
+  <nav class="listing">
+    <a href="accounting/">
+      <span class="perm">drwxr-xr-x</span>
+      <span class="name">accounting/</span>
+      <span class="desc"># Accounting I projects</span>
+    </a>
+    <a href="entrepreneurship/">
+      <span class="perm">drwxr-xr-x</span>
+      <span class="name">entrepreneurship/</span>
+      <span class="desc"># Entrepreneurship projects</span>
+    </a>
+    <a href="business-management/">
+      <span class="perm">drwxr-xr-x</span>
+      <span class="name">business-management/</span>
+      <span class="desc"># Business Management projects</span>
+    </a>
+  </nav>
+
+  <p class="line gap prompt"><b>student@huron</b>:~$ <span class="cursor"></span></p>
+
+</main>
+</body>
+</html>
