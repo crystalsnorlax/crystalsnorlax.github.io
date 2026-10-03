@@ -174,7 +174,7 @@
            one after another. Edit the words freely.
            ===================================================== -->
       <p class="line dim">M.Harris Repository SYSTEMS  REV 1.0</p>
-      <p class="line dim">MEMORY CHECK .......... 640K OK</p>
+      <p class="line dim">MEMORY CHECK .......... <span id="mem">640K OK</span></p>
       <p class="line dim">CONNECTING TO SERVER .......... OK</p>
 
       <p class="line gap">LOGON:  Admin</p>
@@ -213,6 +213,32 @@
 const CHAR_DELAY = 28;
 const LINE_DELAY = 220;
 
+/* MEMORY COUNTER settings */
+const MEM_TOTAL   = 640;   // final number (in K)
+const MEM_STEP    = 16;    // how much it jumps each tick
+const MEM_SPEED   = 30;    // ms between ticks (smaller = faster)
+const MEM_RECHECK = 12;    // re-run the count every X seconds (0 = never)
+
+const memEl = document.getElementById('mem');
+const memText = n => String(n).padStart(3, '0') + 'K';
+let memBusy = false;
+
+// Counts 000K -> 640K like an old BIOS memory test, then shows OK
+async function countMemory(fast) {
+  if (memBusy) return;
+  memBusy = true;
+  for (let k = 0; k <= MEM_TOTAL; k += MEM_STEP) {
+    memEl.textContent = memText(k);
+    await new Promise(r => setTimeout(r, (skipped && !fast) ? 0 : MEM_SPEED));
+  }
+  memEl.textContent = memText(MEM_TOTAL) + ' OK';
+  memBusy = false;
+}
+
+function startRecheck() {
+  if (MEM_RECHECK > 0) setInterval(() => countMemory(true), MEM_RECHECK * 1000);
+}
+
 const lines  = [...document.querySelectorAll('#screen .line')];
 const prompt = document.getElementById('prompt');
 const skipEl = document.getElementById('skip');
@@ -234,6 +260,10 @@ function finishAll() {
   jobs.forEach(j => { j.line.style.visibility = 'visible'; j.nodes.forEach(n => n.node.textContent = n.text); });
   prompt.innerHTML = '&gt; <span class="cursor"></span>';
   skipEl.remove();
+  if (!finishAll.done) {
+    finishAll.done = true;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) startRecheck();
+  }
 }
 
 async function boot() {
@@ -244,6 +274,7 @@ async function boot() {
     if (skipped) break;
     job.line.style.visibility = 'visible';
     for (const n of job.nodes) {
+      if (n.node.parentNode === memEl) { await countMemory(); continue; }
       for (let i = 1; i <= n.text.length; i++) {
         if (skipped) break;
         n.node.textContent = n.text.slice(0, i);
