@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Quest Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================
+     COLORS — change these to re-theme the whole page
+     ========================================================= */
+  :root {
+    --bg-dark:      #1a1410;   /* page background */
+    --stone:        #4a3f33;   /* panel stone */
+    --stone-light:  #6b5a47;
+    --stone-dark:   #2b241c;
+    --parchment:    #d8c49a;
+    --gold:         #ffcc33;   /* classic yellow game text */
+    --gold-dark:    #b8860b;
+    --orange:       #ff9933;
+    --text-light:   #ffffff;
+    --text-cyan:    #00ffff;   /* chatbox highlight */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+    /* subtle cobblestone texture made with gradients (no images needed) */
+    background-image:
+      radial-gradient(circle at 25% 25%, rgba(255,255,255,0.03) 2px, transparent 3px),
+      radial-gradient(circle at 75% 75%, rgba(0,0,0,0.25) 2px, transparent 3px),
+      linear-gradient(180deg, #0e0b08 0%, #2a2018 50%, #0e0b08 100%);
+    background-size: 24px 24px, 24px 24px, 100% 100%;
+    color: var(--gold);
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+  }
+
+  /* ---------- Title banner ---------- */
+  .banner {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .banner h1 {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 7vw, 3.6rem);
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-shadow:
+      3px 3px 0 #000,
+      -1px -1px 0 #5a3b00,
+      0 0 18px rgba(255, 170, 0, 0.35);
+  }
+  .banner p {
+    color: var(--orange);
+    text-shadow: 2px 2px 0 #000;
+    margin-top: 4px;
+  }
+
+  /* ---------- Stone panel (main window) ---------- */
+  .panel {
+    width: 100%;
+    max-width: 760px;
+    background: linear-gradient(180deg, var(--stone-light), var(--stone) 40%, var(--stone-dark));
+    border: 4px solid #000;
+    outline: 3px solid var(--gold-dark);
+    outline-offset: -9px;
+    box-shadow: 0 0 0 2px #3a2f24, 0 10px 30px rgba(0,0,0,0.8);
+    padding: 28px 24px;
+  }
+
+  .panel-title {
+    font-family: 'Cinzel', Georgia, serif;
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Category sections ---------- */
+  .category { margin-bottom: 22px; }
+  .category:last-child { margin-bottom: 0; }
+
+  .category h2 {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--orange);
+    text-shadow: 2px 2px 0 #000;
+    border-bottom: 2px solid #000;
+    box-shadow: 0 1px 0 var(--gold-dark);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+
+  .links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+
+  /* ---------- Link buttons (old-school "world select" look) ---------- */
+  .links a {
+    display: block;
+    text-decoration: none;
+    color: var(--gold);
+    text-shadow: 1px 1px 0 #000;
+    background: linear-gradient(180deg, #5e4d3b, #3b3026);
+    border: 2px solid #000;
+    box-shadow: inset 1px 1px 0 #8a7458, inset -1px -1px 0 #1f1913;
+    padding: 8px 12px;
+    line-height: 1.1;
+    transition: color 0.1s, background 0.1s;
+  }
+  .links a::before { content: "\25B8  "; color: var(--gold-dark); }   /* small arrow */
+  .links a small {
+    display: block;
+    font-size: 0.8em;
+    color: var(--parchment);
+    opacity: 0.85;
+  }
+  .links a:hover,
+  .links a:focus-visible {
+    color: var(--text-light);
+    background: linear-gradient(180deg, #7a6449, #4a3c2e);
+    outline: none;
+  }
+  .links a:active {
+    box-shadow: inset -1px -1px 0 #8a7458, inset 1px 1px 0 #1f1913;
+  }
+
+  /* ---------- Chatbox footer ---------- */
+  .chatbox {
+    width: 100%;
+    max-width: 760px;
+    margin-top: 20px;
+    background: var(--parchment);
+    background-image: linear-gradient(180deg, #e3d1a8, #c9b385);
+    border: 4px solid #000;
+    outline: 2px solid var(--gold-dark);
+    outline-offset: -7px;
+    padding: 14px 18px;
+    color: #000;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+  .chatbox .sys { color: #000; }
+  .chatbox .hl  { color: #0000cc; }
+  .chatbox .name { color: #7a0000; }
+
+  footer {
+    margin-top: 16px;
+    color: #8a7458;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    body { font-size: 20px; padding: 20px 16px; }
+    .panel { padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- =====================================================
+       TITLE — edit the name and tagline here
+       ===================================================== -->
+  <header class="banner">
+    <h1>Business Quest Hub</h1>
+    <p>Huron High School &middot; Business &amp; Accounting</p>
+  </header>
+
+  <main class="panel">
+    <div class="panel-title">~ Choose Your Quest ~</div>
+
+    <!-- =====================================================
+         HOW TO ADD A LINK:
+         Copy one <a ...>...</a> line and paste it inside a
+         "links" box. Change the href (file name or URL),
+         the title, and the small description.
+
+         HOW TO ADD A CATEGORY:
+         Copy a whole <section class="category"> ... </section>
+         block and change the <h2> heading.
+
+         Links to files in the same GitHub repo can just be the
+         file name, e.g. href="chapter1.html" or a folder path
+         like href="accounting/ch4-ledger.html"
+         ===================================================== -->
+
+    <section class="category">
+      <h2>Accounting I</h2>
+      <div class="links">
+        <a href="accounting/chapter1.html">Chapter 1 Quest<small>Starting a proprietorship</small></a>
+        <a href="accounting/chapter4.html">Chapter 4 Quest<small>Posting to a general ledger</small></a>
+        <a href="#">New Project<small>Add a description</small></a>
+      </div>
+    </section>
+
+    <section class="category">
+      <h2>Entrepreneurship</h2>
+      <div class="links">
+        <a href="entrepreneurship/product-project.html">Product Project<small>Design your own product</small></a>
+        <a href="#">New Project<small>Add a description</small></a>
+      </div>
+    </section>
+
+    <section class="category">
+      <h2>Business Management</h2>
+      <div class="links">
+        <a href="business/career-exploration.html">Career Exploration<small>Find your path</small></a>
+        <a href="#">New Project<small>Add a description</small></a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================
+       CHATBOX — edit the welcome/announcement text here
+       ===================================================== -->
+  <div class="chatbox">
+    <div class="sys">Welcome to the <span class="name">Business Quest Hub</span>.</div>
+    <div class="sys">Select a quest above to begin your adventure.</div>
+    <div class="hl">Tip: Bookmark this page to find your projects quickly!</div>
+  </div>
+
+  <footer>
+    &copy; 2026 &middot; Made for my students
+  </footer>
+
+</body>
+</html>
