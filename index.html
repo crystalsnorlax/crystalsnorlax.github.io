@@ -3,151 +3,265 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Terminal</title>
+<title>M.Harris Directory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
   /* =========================================================
      COLORS — change these to re-theme the whole page
-     Tip: for an amber monitor look, set --green to #ffb000
+     Phosphor ideas:  cyan #8ae8ff  |  green #33ff66  |  amber #ffb000
      ========================================================= */
   :root {
-    --bg:      #0c0c0c;   /* screen background */
-    --green:   #33ff66;   /* main terminal text */
-    --dim:     #1f9e40;   /* secondary text */
-    --blue:    #5fafff;   /* directory names */
-    --white:   #e8e8e8;
+    --phosphor:     #8ae8ff;              /* screen text */
+    --phosphor-dim: #4aa3bd;              /* secondary screen text */
+    --glow:         rgba(138,232,255,.45);
+    --screen-bg:    #041016;              /* the glass */
+    --case:         #cfc6b0;              /* beige plastic */
+    --case-shade:   #a89f88;
+    --room:         #121212;              /* page background */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     min-height: 100vh;
-    background: var(--bg);
-    color: var(--green);
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 17px;
-    line-height: 1.6;
-    padding: 40px 16px;
-  }
-
-  /* faint CRT scanlines */
-  body::after {
-    content: "";
-    position: fixed; inset: 0;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
-  }
-
-  .terminal {
-    max-width: 760px;
-    margin: 0 auto;
-    text-shadow: 0 0 4px rgba(51, 255, 102, 0.35);
-  }
-
-  pre.ascii {
-    font-size: clamp(7px, 2.1vw, 14px);
-    line-height: 1.15;
-    color: var(--green);
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-
-  .dim    { color: var(--dim); }
-  .prompt { color: var(--white); }
-  .prompt b { color: var(--green); }
-  .line   { margin-bottom: 4px; }
-  .gap    { margin-top: 20px; }
-
-  /* ---------- Directory listing ---------- */
-  .listing { margin: 6px 0 4px; }
-  .listing a {
+    background: radial-gradient(ellipse at 50% 30%, #2a2a2a 0%, var(--room) 70%);
     display: flex;
-    gap: 18px;
-    color: var(--blue);
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    font-family: 'VT323', 'Courier New', monospace;
+  }
+
+  /* ---------- The monitor case ---------- */
+  .monitor {
+    width: 100%;
+    max-width: 860px;
+    background: linear-gradient(180deg, #ddd5c0 0%, var(--case) 40%, var(--case-shade) 100%);
+    border-radius: 28px;
+    padding: 34px 34px 18px;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.6),
+      inset 0 -6px 0 rgba(0,0,0,.15),
+      0 30px 60px rgba(0,0,0,.7);
+  }
+
+  /* dark recessed frame around the glass */
+  .bezel {
+    background: #1b1b1b;
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: inset 0 0 0 3px #0a0a0a, inset 0 6px 14px rgba(0,0,0,.9);
+  }
+
+  /* ---------- The CRT glass ---------- */
+  .screen {
+    position: relative;
+    min-height: 460px;
+    background: radial-gradient(ellipse at center, #0a2430 0%, var(--screen-bg) 75%);
+    border-radius: 36px / 28px;            /* slight bulge */
+    padding: 34px 38px;
+    overflow: hidden;
+    color: var(--phosphor);
+    font-size: 24px;
+    line-height: 1.35;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 6px var(--glow);
+    animation: flicker 0.15s infinite alternate;
+    cursor: default;
+  }
+
+  /* scanlines + curved-glass vignette */
+  .screen::before,
+  .screen::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+  .screen::before {
+    background: repeating-linear-gradient(
+      0deg, rgba(0,0,0,.28) 0px, rgba(0,0,0,.28) 1px, transparent 1px, transparent 3px);
+    z-index: 2;
+  }
+  .screen::after {
+    background:
+      radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.65) 100%),
+      linear-gradient(160deg, rgba(255,255,255,.06) 0%, transparent 35%);  /* glass glare */
+    z-index: 3;
+  }
+
+  @keyframes flicker { from { opacity: .97; } to { opacity: 1; } }
+
+  /* ---------- Screen content ---------- */
+  .line   { min-height: 1.35em; white-space: pre-wrap; }
+  .dim    { color: var(--phosphor-dim); }
+  .gap    { margin-top: 18px; }
+
+  .listing a {
+    color: var(--phosphor);
     text-decoration: none;
-    padding: 2px 6px;
+    display: inline-block;
+    padding: 0 6px;
     margin-left: -6px;
   }
-  .listing a .perm { color: var(--dim); flex-shrink: 0; }
-  .listing a .name { font-weight: 700; }
-  .listing a .desc { color: var(--dim); }
   .listing a:hover,
   .listing a:focus-visible {
-    background: var(--green);
-    outline: none;
+    background: var(--phosphor);
+    color: var(--screen-bg);
     text-shadow: none;
+    outline: none;
   }
-  .listing a:hover *,
-  .listing a:focus-visible * { color: var(--bg); }
 
   .cursor {
     display: inline-block;
-    width: 10px; height: 1.1em;
-    background: var(--green);
-    vertical-align: text-bottom;
+    width: .6em; height: 1em;
+    background: var(--phosphor);
+    box-shadow: 0 0 6px var(--glow);
+    vertical-align: -0.12em;
     animation: blink 1s steps(1) infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  @media (max-width: 520px) {
-    body { font-size: 15px; padding: 24px 16px; }
-    .listing a .perm { display: none; }   /* hide permissions on phones */
-    .listing a { flex-wrap: wrap; gap: 0 12px; }
+  .skip {
+    position: absolute;
+    right: 18px; bottom: 12px;
+    z-index: 4;
+    font-size: 16px;
+    color: var(--phosphor-dim);
+  }
+
+  /* ---------- Bottom of the case: label + power light ---------- */
+  .case-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 8px 0;
+    color: #6b6352;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+  .power { display: flex; align-items: center; gap: 8px; }
+  .led {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #ff3b30;
+    box-shadow: 0 0 8px #ff3b30;
+  }
+
+  @media (max-width: 600px) {
+    .monitor { padding: 16px 14px 12px; border-radius: 18px; }
+    .bezel   { padding: 10px; border-radius: 14px; }
+    .screen  { padding: 22px 18px; font-size: 19px; min-height: 380px; border-radius: 22px / 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .screen, .cursor { animation: none; }
   }
 </style>
 </head>
 <body>
-<main class="terminal">
 
-<pre class="ascii">
- ____  _   _ ____ ___ _   _ _____ ____ ____
-| __ )| | | / ___|_ _| \ | | ____/ ___/ ___|
-|  _ \| | | \___ \| ||  \| |  _| \___ \___ \
-| |_) | |_| |___) | || |\  | |___ ___) |__) |
-|____/ \___/|____/___|_| \_|_____|____/____/
-</pre>
+<div class="monitor">
+  <div class="bezel">
+    <main class="screen" id="screen">
 
-  <!-- =====================================================
-       HEADER TEXT — edit the welcome lines here
-       ===================================================== -->
-  <p class="line dim">M.Harris &middot; Projects &amp; School Documents [Version 1.0]</p>
-  <p class="line dim">No typing needed. Click a directory below to open it.</p>
+      <!-- =====================================================
+           SCREEN TEXT — every <p class="line"> is typed out
+           one after another. Edit the words freely.
+           ===================================================== -->
+      <p class="line dim">M.Harris Repository SYSTEMS  REV 1.0</p>
+      <p class="line dim">MEMORY CHECK .......... 640K OK</p>
+      <p class="line dim">CONNECTING TO SERVER .......... OK</p>
 
-  <p class="line gap prompt"><b>Education</b>:~$ ls -l</p>
+      <p class="line gap">LOGON:  Admin</p>
+      <p class="line gap">GREETINGS, User.</p>
+      <p class="line">SELECT A DIRECTORY TO BEGIN.</p>
 
-  <!-- =====================================================
-       HOW TO ADD A DIRECTORY LINK:
-       Copy one <a ...>...</a> block and change:
-         href  = the folder (or file) in your GitHub repo
-         name  = what students see
-         desc  = short description
-       A link to a folder like "accounting/" opens that
-       folder's index.html automatically on GitHub Pages.
-       ===================================================== -->
-  <nav class="listing">
-    <a href="accounting/">
-      <span class="perm">drwxr-xr-x</span>
-      <span class="name">TBD1/</span>
-      <span class="desc"># Accounting I projects</span>
-    </a>
-    <a href="entrepreneurship/">
-      <span class="perm">drwxr-xr-x</span>
-      <span class="name">TBD2p/</span>
-      <span class="desc"># Entrepreneurship projects</span>
-    </a>
-    <a href="business-management/">
-      <span class="perm">drwxr-xr-x</span>
-      <span class="name">TBD3/</span>
-      <span class="desc"># Business Management projects</span>
-    </a>
-  </nav>
+      <!-- =====================================================
+           HOW TO ADD A DIRECTORY LINK:
+           Copy one whole <p class="line">...</p> line below
+           and change the href (folder in your GitHub repo)
+           and the words.
+           ===================================================== -->
+      <div class="listing gap">
+        <p class="line"><a href="accounting/">&gt; To be Announced</a></p>
+        <p class="line"><a href="entrepreneurship/">&gt; To be announced 2</a></p>
+        <p class="line"><a href="business-management/">&gt; To be announced 3</a></p>
+      </div>
 
-  <p class="line gap prompt"><b>Education</b>:~$ <span class="cursor"></span></p>
+      <p class="line gap" id="prompt"></p>
 
-</main>
+      <div class="skip" id="skip">[ CLICK OR PRESS ANY KEY TO SKIP ]</div>
+    </main>
+  </div>
+
+  <div class="case-bottom">
+    <span>MODEL 1983</span>
+    <span class="power">POWER <span class="led"></span></span>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   TYPING EFFECT — no need to edit anything below.
+   CHAR_DELAY = speed per letter (ms), LINE_DELAY = pause per line.
+   ========================================================= */
+const CHAR_DELAY = 28;
+const LINE_DELAY = 220;
+
+const lines  = [...document.querySelectorAll('#screen .line')];
+const prompt = document.getElementById('prompt');
+const skipEl = document.getElementById('skip');
+let skipped  = false;
+
+// Remember each line's text, then blank it out
+const jobs = lines.map(line => {
+  const walker = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push({ node: walker.currentNode, text: walker.currentNode.textContent });
+  nodes.forEach(n => n.node.textContent = '');
+  line.style.visibility = 'hidden';
+  return { line, nodes };
+});
+
+const wait = ms => new Promise(r => setTimeout(r, skipped ? 0 : ms));
+
+function finishAll() {
+  jobs.forEach(j => { j.line.style.visibility = 'visible'; j.nodes.forEach(n => n.node.textContent = n.text); });
+  prompt.innerHTML = '&gt; <span class="cursor"></span>';
+  skipEl.remove();
+}
+
+async function boot() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return finishAll();
+
+  for (const job of jobs) {
+    if (skipped) break;
+    job.line.style.visibility = 'visible';
+    for (const n of job.nodes) {
+      for (let i = 1; i <= n.text.length; i++) {
+        if (skipped) break;
+        n.node.textContent = n.text.slice(0, i);
+        await wait(CHAR_DELAY);
+      }
+    }
+    await wait(LINE_DELAY);
+  }
+  finishAll();
+}
+
+function skip() { if (!skipped) { skipped = true; finishAll(); } }
+document.addEventListener('keydown', skip, { once: true });
+document.getElementById('screen').addEventListener('click', e => {
+  if (!e.target.closest('a')) skip();
+});
+
+boot();
+</script>
 </body>
 </html>
