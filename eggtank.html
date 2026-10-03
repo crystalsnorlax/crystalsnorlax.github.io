@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Egg Tank Client Draw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Archivo:wght@400;600;800&display=swap">
+<style>
+/* Layout: game-show stage — four face-down cards under a spotlight, one big draw button, a running draw log below. Single dark "deep water" look by choice. */
+:root {
+  --abyss: #0A1F3C; --deep: #16365C; --reef: #21486F; --foam: #EAF3F7; --mist: #9FB7CC;
+  --yolk: #FFC23D; --teal: #1B98A6; --aqua: #7FD1C7; --red: #E5484D; --orange: #F28C28;
+  --display: "Bungee", "Arial Black", Impact, sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { min-height: 100%; }
+body {
+  background: radial-gradient(ellipse 80% 55% at 50% 0%, #1d4a78 0%, var(--abyss) 70%) fixed, var(--abyss);
+  color: var(--foam); font-family: var(--body); font-size: 16px; margin: 0;
+  padding: 24px 20px 48px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand svg { width: 52px; height: 52px; flex: none; }
+.eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .18em; color: var(--yolk); text-transform: uppercase; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 5vw, 46px); line-height: 1; margin: 4px 0 0; letter-spacing: .01em; }
+.controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; background: var(--deep); border-radius: 999px; padding: 4px; }
+.seg button { border: 0; background: transparent; color: var(--mist); font: 600 13px var(--body); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--aqua); color: var(--abyss); }
+.icon-btn { border: 0; background: var(--deep); color: var(--foam); font: 600 13px var(--body); padding: 12px 16px; border-radius: 999px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--yolk); outline-offset: 2px; }
+
+.stage { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.team { display: flex; flex-direction: column; gap: 6px; width: min(460px, 100%); }
+.team label { font-size: 12px; font-weight: 800; letter-spacing: .14em; color: var(--aqua); text-transform: uppercase; }
+.team input { width: 100%; font: 600 20px var(--body); padding: 14px 18px; border-radius: 14px; border: 2px solid var(--reef); background: rgba(10,31,60,.6); color: var(--foam); }
+.team input::placeholder { color: var(--mist); opacity: .7; }
+
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; width: 100%; max-width: 860px; }
+.back {
+  aspect-ratio: 3 / 4; max-width: 100%; border-radius: 18px; position: relative; overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 120%, rgba(127,209,199,.25), transparent 60%),
+    repeating-radial-gradient(ellipse 22px 28px at 50% 50%, transparent 0 10px, rgba(255,255,255,.035) 10px 12px),
+    var(--deep);
+  border: 3px solid var(--reef);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.back svg { width: 46%; height: auto; opacity: .9; }
+.back .q { font-family: var(--display); font-size: clamp(14px, 2.2vw, 20px); color: var(--mist); letter-spacing: .06em; }
+.back.lit { border-color: var(--yolk); transform: translateY(-8px) scale(1.04); box-shadow: 0 0 0 4px rgba(255,194,61,.25), 0 18px 40px rgba(255,194,61,.25); }
+.back.lit .q { color: var(--yolk); }
+
+.draw {
+  font-family: var(--display); font-size: clamp(22px, 4vw, 32px); letter-spacing: .03em;
+  background: var(--yolk); color: var(--abyss); border: 0; border-radius: 999px;
+  padding: 20px 46px; cursor: pointer; box-shadow: 0 8px 0 #c48d10, 0 14px 30px rgba(0,0,0,.35);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+.draw:active { transform: translateY(6px); box-shadow: 0 2px 0 #c48d10, 0 6px 16px rgba(0,0,0,.35); }
+.draw:disabled { opacity: .6; cursor: wait; }
+.hint { color: var(--mist); font-size: 13px; text-align: center; }
+.hint kbd { font: 700 12px var(--body); background: var(--deep); border: 1px solid var(--reef); border-radius: 6px; padding: 2px 7px; color: var(--foam); }
+
+.pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 999px; background: var(--deep); color: var(--foam); }
+.chip i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.chip.used { opacity: .35; text-decoration: line-through; }
+
+.log { background: rgba(22,54,92,.55); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.log-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.log h2 { font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0; }
+.log-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.log-actions button { border: 1px solid var(--reef); background: transparent; color: var(--foam); font: 600 13px var(--body); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.log-actions button.save { background: var(--yolk); border-color: var(--yolk); color: var(--abyss); font-weight: 800; }
+.log-actions button:disabled { opacity: .4; cursor: default; }
+.status { font-size: 13px; color: var(--aqua); min-height: 1em; margin: 0; }
+.log-actions button.warn { border-color: var(--red); color: #ffb3b5; }
+.confirm { display: flex; gap: 8px; align-items: center; font-size: 13px; color: #ffb3b5; flex-wrap: wrap; }
+ol { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+ol li { display: flex; align-items: center; gap: 10px; background: var(--abyss); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+ol li .n { font: 800 12px var(--body); color: var(--mist); font-variant-numeric: tabular-nums; width: 22px; flex: none; }
+ol li .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+ol li .c { font-size: 12px; font-weight: 800; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.empty { color: var(--mist); font-size: 14px; margin: 0; }
+
+/* Reveal overlay */
+.overlay { position: fixed; inset: 0; background: rgba(5,15,30,.82); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+.flip { perspective: 1400px; width: min(520px, 100%); }
+.reveal {
+  background: var(--foam); color: var(--abyss); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5); animation: flipIn .7s cubic-bezier(.2,.9,.3,1.2) both;
+  max-height: calc(100vh - 40px); overflow-y: auto;
+}
+@keyframes flipIn { from { transform: rotateY(90deg) scale(.7); opacity: .2; } to { transform: rotateY(0) scale(1); opacity: 1; } }
+.reveal .top { padding: 22px 26px 18px; }
+.reveal .top .who { font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; opacity: .85; }
+.reveal .top h3 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 6vw, 42px); line-height: 1.05; margin: 6px 0 0; text-wrap: balance; }
+.reveal .bodyc { padding: 18px 26px 24px; display: flex; flex-direction: column; gap: 14px; }
+.reveal .desc { font-size: 17px; margin: 0; line-height: 1.45; }
+.reveal dl { margin: 0; display: grid; gap: 12px; }
+.reveal dt { font-size: 11px; font-weight: 800; letter-spacing: .16em; color: var(--teal); text-transform: uppercase; }
+.reveal dd { margin: 3px 0 0; font-size: 15px; line-height: 1.4; }
+.reveal .quote { background: #dbe9f0; border-radius: 12px; padding: 12px 14px; font-weight: 800; font-style: italic; font-size: 16px; }
+.reveal .go { align-self: flex-start; font: 800 15px var(--body); background: var(--abyss); color: var(--foam); border: 0; border-radius: 999px; padding: 12px 22px; cursor: pointer; }
+
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 11; }
+@media (max-width: 640px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 360px; }
+  .draw { padding: 16px 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; }
+  .back, .draw { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M14 72 Q44 52 58 10 Q64 50 86 72 Z" fill="#FFC23D"/><path d="M6 80 q11 -8 22 0 t22 0 t22 0 t22 0" stroke="#7FD1C7" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M6 92 q11 -8 22 0 t22 0 t22 0 t22 0" stroke="#7FD1C7" stroke-width="5" fill="none" stroke-linecap="round" opacity=".5"/></svg>
+      <div>
+        <div class="eyebrow">The Egg Tank · Monday launch</div>
+        <h1>Client Card Draw</h1>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Draw mode">
+        <button id="modeEven" aria-pressed="true" title="Each client is used once before any repeats">Spread evenly</button>
+        <button id="modeRandom" aria-pressed="false" title="Every draw is fully random">Pure random</button>
+      </div>
+      <button class="icon-btn" id="sound" aria-pressed="true">Sound on</button>
+    </div>
+  </header>
+
+  <section class="stage">
+    <div class="team">
+      <label for="teamName">Startup name (optional)</label>
+      <input id="teamName" type="text" placeholder="e.g. Sunny Side Delivery" maxlength="40" autocomplete="off">
+    </div>
+    <div class="cards" id="cards" aria-hidden="true"></div>
+    <button class="draw" id="drawBtn">Draw a client</button>
+    <div class="hint">Press <kbd>Space</kbd> to draw · <kbd>Esc</kbd> to close the card</div>
+    <div class="pool" id="pool" aria-label="Clients still in the tank"></div>
+  </section>
+
+  <section class="log" aria-labelledby="logTitle">
+    <div class="log-head">
+      <h2 id="logTitle">Today's draws</h2>
+      <div class="log-actions" id="logActions">
+        <button id="downloadBtn" class="save">Download list (.txt)</button>
+        <button id="copyBtn">Copy list</button>
+        <button id="undoBtn">Undo last</button>
+        <button id="resetBtn" class="warn">Start over</button>
+      </div>
+    </div>
+    <div class="confirm" id="confirmRow" hidden>
+      Clear every draw and refill the tank?
+      <button id="confirmYes" class="icon-btn" style="background:var(--red);padding:8px 14px">Yes, clear</button>
+      <button id="confirmNo" class="icon-btn" style="padding:8px 14px">Keep them</button>
+    </div>
+    <p class="status" id="status" role="status"></p>
+    <ol id="logList"></ol>
+    <p class="empty" id="emptyMsg">No draws yet. Type a startup name, then hit the yellow button. Each team's client shows up here so you can check it later.</p>
+  </section>
+</div>
+
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="revealName">
+  <div class="flip"><div class="reveal" id="reveal"></div></div>
+</div>
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+const CLIENTS = [
+  { id: 'lux', name: 'Luxury Gift', color: '#FFC23D', ink: '#0A1F3C',
+    desc: 'A high-end gift shop selling one "golden" egg as a keepsake for special occasions.',
+    cares: 'Elegance, a slow and dramatic reveal, zero damage',
+    has: 'Premium look (think jewelry box), a personal note, colors that feel expensive',
+    think: 'Can the box itself become a keepsake?',
+    quote: '"I want them to gasp before they even see the egg."' },
+  { id: 'eco', name: 'Eco Subscription', color: '#1B98A6', ink: '#FFFFFF',
+    desc: 'A farm-to-door delivery box for shoppers who hate packaging waste.',
+    cares: 'No plastic, a tiny footprint, reusability',
+    has: 'Right-sized design, natural materials, clear recycle or return instructions',
+    think: 'Can the customer send the package back for reuse?',
+    quote: '"If it shows up wrapped in plastic, I\'m out."' },
+  { id: 'kids', name: "Kids' Surprise Box", color: '#F28C28', ink: '#0A1F3C',
+    desc: 'A monthly mystery box for kids ages 8 to 12.',
+    cares: 'Fun to open, safe, a hidden surprise',
+    has: 'Bright colors, a character or mascot, an activity or game in the unboxing',
+    think: "Can a kid open it without an adult's help?",
+    quote: '"Make it so fun they forget it\'s an egg."' },
+  { id: 'hype', name: 'Hype Drop', color: '#E5484D', ink: '#FFFFFF',
+    desc: 'A limited-edition "smart egg" launch for collectors and fans.',
+    cares: 'A bold look, a shareable unboxing, feeling rare',
+    has: 'Numbered "limited edition" label, a dramatic reveal, a look made for video',
+    think: 'What makes someone want to film this and post it?',
+    quote: '"If it\'s not worth filming, it\'s not worth buying."' },
+];
+const byId = Object.fromEntries(CLIENTS.map(c => [c.id, c]));
+const FIN = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M14 72 Q44 52 58 10 Q64 50 86 72 Z" fill="#7FD1C7"/><path d="M6 84 q11 -8 22 0 t22 0 t22 0 t22 0" stroke="#7FD1C7" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/></svg>';
+
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const KEY = 'eggtank-draws-v1';
+let state = { mode: 'even', sound: true, draws: [] };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.draws)) state = { ...state, ...s }; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+// cards
+const cardsEl = $('cards');
+for (let i = 0; i < 4; i++) {
+  const d = document.createElement('div');
+  d.className = 'back'; d.innerHTML = FIN + '<div class="q">CLIENT ?</div>';
+  cardsEl.appendChild(d);
+}
+const backs = [...cardsEl.children];
+
+// which clients are left in the current "round" (even mode)
+function remaining() {
+  const n = state.draws.length % 4;
+  const thisRound = state.draws.slice(state.draws.length - n).map(d => d.id);
+  return CLIENTS.filter(c => !thisRound.includes(c.id));
+}
+function renderPool() {
+  const left = state.mode === 'even' ? remaining().map(c => c.id) : CLIENTS.map(c => c.id);
+  $('pool').innerHTML = CLIENTS.map(c => `<span class="chip ${left.includes(c.id) ? '' : 'used'}"><i style="background:${c.color}"></i>${c.name}</span>`).join('');
+}
+function renderLog() {
+  const list = $('logList');
+  list.innerHTML = state.draws.map((d, i) => {
+    const c = byId[d.id];
+    return `<li><span class="n">${i + 1}</span><span class="t" title="${esc(d.team)}">${esc(d.team)}</span><span class="c" style="background:${c.color};color:${c.ink}">${c.name}</span></li>`;
+  }).join('');
+  $('emptyMsg').hidden = state.draws.length > 0;
+  $('undoBtn').disabled = state.draws.length === 0;
+  $('downloadBtn').disabled = state.draws.length === 0;
+  $('copyBtn').disabled = state.draws.length === 0;
+  renderPool();
+}
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+
+// sound
+let ctx;
+function tone(freq, dur = 0.06, type = 'square', vol = 0.06, when = 0) {
+  if (!state.sound) return;
+  try {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = ctx.currentTime + when, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + dur + 0.02);
+  } catch (e) {}
+}
+function fanfare() { [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.35, 'triangle', 0.09, i * 0.11)); }
+
+// draw
+let busy = false;
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function draw() {
+  if (busy) return;
+  busy = true; $('drawBtn').disabled = true;
+  const pool = state.mode === 'even' ? remaining() : CLIENTS;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  const target = Math.floor(Math.random() * 4);           // which face-down card "holds" it
+  if (!reduce) {
+    let idx = Math.floor(Math.random() * 4);
+    const steps = 18 + ((target - (idx + 18)) % 4 + 4) % 4;
+    for (let s = 0; s <= steps; s++) {
+      backs.forEach(b => b.classList.remove('lit'));
+      backs[idx].classList.add('lit');
+      tone(440 + (s % 4) * 60, 0.05);
+      const p = s / steps;
+      await wait(55 + 380 * p * p * p);
+      if (s < steps) idx = (idx + 1) % 4;
+    }
+    await wait(250);
+  }
+  const team = $('teamName').value.trim() || `Team ${state.draws.length + 1}`;
+  state.draws.push({ id: pick.id, team, at: Date.now() });
+  save(); renderLog();
+  showReveal(pick, team);
+  fanfare(); confetti(pick.color);
+  backs.forEach(b => b.classList.remove('lit'));
+  busy = false; $('drawBtn').disabled = false;
+}
+
+function showReveal(c, team) {
+  $('reveal').innerHTML = `
+    <div class="top" style="background:${c.color};color:${c.ink}">
+      <div class="who">${esc(team)}, your client is</div>
+      <h3 id="revealName">${c.name}</h3>
+    </div>
+    <div class="bodyc">
+      <p class="desc">${c.desc}</p>
+      <dl>
+        <div><dt>Cares about</dt><dd><strong>${c.cares}</strong></dd></div>
+        <div><dt>Your package should have</dt><dd>${c.has}</dd></div>
+        <div><dt>Think about</dt><dd><em>${c.think}</em></dd></div>
+      </dl>
+      <div class="quote">${c.quote}</div>
+      <button class="go" id="nextBtn">Next team</button>
+    </div>`;
+  $('overlay').hidden = false;
+  $('nextBtn').focus();
+  $('nextBtn').onclick = closeReveal;
+}
+function closeReveal() {
+  $('overlay').hidden = true;
+  $('teamName').value = '';
+  $('teamName').focus();
+}
+$('overlay').addEventListener('click', e => { if (e.target === $('overlay')) closeReveal(); });
+
+// confetti (egg-shaped)
+function confetti(color) {
+  if (reduce) return;
+  const cv = $('confetti'), g = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight; cv.hidden = false;
+  const cols = [color, '#FFC23D', '#FFFFFF', '#7FD1C7'];
+  const P = Array.from({ length: 110 }, () => ({
+    x: innerWidth / 2 + (Math.random() - .5) * 120, y: innerHeight * .45,
+    vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4, r: Math.random() * 5 + 4,
+    a: Math.random() * 6, va: (Math.random() - .5) * .3, c: cols[Math.floor(Math.random() * cols.length)],
+  }));
+  let f = 0;
+  (function tick() {
+    g.clearRect(0, 0, cv.width, cv.height);
+    P.forEach(p => {
+      p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.c;
+      g.beginPath(); g.ellipse(0, 0, p.r * .8, p.r, 0, 0, Math.PI * 2); g.fill(); g.restore();
+    });
+    if (++f < 130) requestAnimationFrame(tick); else { g.clearRect(0, 0, cv.width, cv.height); cv.hidden = true; }
+  })();
+}
+
+// controls
+function setMode(m) {
+  state.mode = m; save();
+  $('modeEven').setAttribute('aria-pressed', m === 'even');
+  $('modeRandom').setAttribute('aria-pressed', m === 'random');
+  renderPool();
+}
+$('modeEven').onclick = () => setMode('even');
+$('modeRandom').onclick = () => setMode('random');
+function setSound(on) { state.sound = on; save(); $('sound').setAttribute('aria-pressed', on); $('sound').textContent = on ? 'Sound on' : 'Sound off'; }
+$('sound').onclick = () => setSound(!state.sound);
+$('drawBtn').onclick = draw;
+$('undoBtn').onclick = () => { state.draws.pop(); save(); renderLog(); };
+$('resetBtn').onclick = () => { $('confirmRow').hidden = false; $('logActions').hidden = true; };
+$('confirmNo').onclick = () => { $('confirmRow').hidden = true; $('logActions').hidden = false; };
+$('confirmYes').onclick = () => { state.draws = []; save(); renderLog(); $('confirmNo').onclick(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('overlay').hidden) { closeReveal(); return; }
+  if ((e.key === ' ' || e.code === 'Space') && $('overlay').hidden && document.activeElement !== $('teamName') && !busy) { e.preventDefault(); draw(); }
+  if (e.key === 'Enter' && document.activeElement === $('teamName')) { e.preventDefault(); draw(); }
+});
+
+// ---- export the list ----
+function listText() {
+  const now = new Date();
+  const lines = [];
+  lines.push('THE EGG TANK - CLIENT CARD DRAW');
+  lines.push('Saved: ' + now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+  lines.push('Total teams: ' + state.draws.length);
+  lines.push('');
+  lines.push('DRAW ORDER');
+  lines.push('----------');
+  state.draws.forEach((d, i) => lines.push((i + 1) + '. ' + d.team + '  ->  ' + byId[d.id].name));
+  lines.push('');
+  lines.push('BY CLIENT');
+  lines.push('---------');
+  CLIENTS.forEach(c => {
+    const teams = state.draws.filter(d => d.id === c.id).map(d => d.team);
+    lines.push(c.name + ' (' + teams.length + '): ' + (teams.length ? teams.join(', ') : 'none'));
+  });
+  return lines.join('\r\n') + '\r\n';
+}
+function flash(msg) { $('status').textContent = msg; clearTimeout(flash.t); flash.t = setTimeout(() => $('status').textContent = '', 4000); }
+$('downloadBtn').onclick = () => {
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  const name = `Egg_Tank_Client_Draws_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.txt`;
+  const url = URL.createObjectURL(new Blob([listText()], { type: 'text/plain' }));
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  flash('Saved ' + name + ' to your Downloads folder.');
+};
+$('copyBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText(listText()); flash('List copied. Paste it into Word, Google Docs or an email.'); }
+  catch (e) { flash('Copy did not work in this browser. Use Download list instead.'); }
+};
+
+setMode(state.mode); setSound(state.sound); renderLog();
+</script>
+</body>
+</html>
