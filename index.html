@@ -215,9 +215,9 @@ const LINE_DELAY = 220;
 
 /* MEMORY COUNTER settings */
 const MEM_TOTAL   = 1000;   // final number (in K)
-const MEM_STEP    = 16;    // how much it jumps each tick
+const MEM_STEP    = 8;    // how much it jumps each tick
 const MEM_SPEED   = 150;    // ms between ticks (smaller = faster)
-const MEM_RECHECK = 12;    // re-run the count every X seconds (0 = never)
+const MEM_RECHECK = 4;    // re-run the count every X seconds (0 = never)
 
 const memEl = document.getElementById('mem');
 const memText = n => String(n).padStart(3, '0') + 'K';
