@@ -174,7 +174,7 @@
            one after another. Edit the words freely.
            ===================================================== -->
       <p class="line dim">M.Harris Repository SYSTEMS  REV 1.0</p>
-      <p class="line dim">MEMORY CHECK .......... <span id="mem">640K OK</span></p>
+      <p class="line dim">MEMORY CHECK .......... <span id="mem">1000K OK</span></p>
       <p class="line dim">CONNECTING TO SERVER .......... OK</p>
 
       <p class="line gap">LOGON:  Admin</p>
@@ -214,9 +214,9 @@ const CHAR_DELAY = 28;
 const LINE_DELAY = 220;
 
 /* MEMORY COUNTER settings */
-const MEM_TOTAL   = 640;   // final number (in K)
+const MEM_TOTAL   = 1000;   // final number (in K)
 const MEM_STEP    = 16;    // how much it jumps each tick
-const MEM_SPEED   = 30;    // ms between ticks (smaller = faster)
+const MEM_SPEED   = 150;    // ms between ticks (smaller = faster)
 const MEM_RECHECK = 12;    // re-run the count every X seconds (0 = never)
 
 const memEl = document.getElementById('mem');
