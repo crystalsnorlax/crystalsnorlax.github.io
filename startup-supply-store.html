@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startup Supply Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213d; --navy2:#1f3160; --orange:#fca311; --orange-d:#e08e00;
+    --bg:#eef1f6; --card:#ffffff; --ink:#1b1f2a; --muted:#5d6577;
+    --green:#1f9d55; --red:#d64045; --line:#dde2ec;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Nunito',system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+  /* ---------- Header ---------- */
+  header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .top{display:flex;align-items:center;gap:18px;padding:12px 22px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Fredoka',sans-serif;font-size:1.6rem;font-weight:700;white-space:nowrap}
+  .logo span{color:var(--orange)}
+  .search{flex:1;min-width:220px;display:flex;border-radius:8px;overflow:hidden;box-shadow:0 0 0 2px transparent;transition:.2s}
+  .search:focus-within{box-shadow:0 0 0 3px var(--orange)}
+  .search select{border:none;background:#e6e9ef;padding:0 10px;font:inherit;font-size:.9rem;color:var(--ink);cursor:pointer}
+  .search input{flex:1;border:none;padding:11px 14px;font:inherit;font-size:1rem;outline:none;min-width:0}
+  .search button{border:none;background:var(--orange);padding:0 18px;cursor:pointer;display:grid;place-items:center}
+  .search button:hover{background:var(--orange-d)}
+  .wallet{display:flex;align-items:center;gap:8px;font-size:.85rem;line-height:1.2}
+  .wallet b{display:block;font-size:1rem}
+  .nav{background:var(--navy2);display:flex;gap:6px;padding:8px 22px;overflow-x:auto}
+  .nav button{background:none;border:1px solid transparent;color:#fff;font:inherit;font-weight:700;font-size:.92rem;padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .nav button:hover{border-color:#fff}
+  .nav button.active{background:var(--orange);color:var(--navy)}
+
+  /* ---------- Hero ---------- */
+  .hero{max-width:1250px;margin:22px auto 0;padding:0 22px}
+  .banner{background:linear-gradient(115deg,#ffd166 0%,#fca311 45%,#f77f00 100%);border-radius:16px;padding:26px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden;position:relative}
+  .banner h1{font-family:'Fredoka',sans-serif;font-size:2.1rem;color:var(--navy);line-height:1.1}
+  .banner p{margin-top:8px;font-weight:700;color:#3a2a00;max-width:520px}
+  .pill{display:inline-block;margin-top:14px;background:var(--navy);color:#fff;padding:7px 14px;border-radius:999px;font-weight:800;font-size:.9rem}
+  .banner svg{flex-shrink:0}
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{max-width:1250px;margin:20px auto 0;padding:0 22px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .toolbar .count{color:var(--muted);font-weight:700}
+  .toolbar select{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+
+  /* ---------- Grid ---------- */
+  main{max-width:1250px;margin:14px auto 50px;padding:0 22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+  .card{background:var(--card);border-radius:14px;border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;cursor:pointer;transition:transform .18s, box-shadow .18s;position:relative}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(20,33,61,.15)}
+  .card:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+  .img{background:linear-gradient(180deg,#f7f9fc,#eaf0f8);height:180px;display:grid;place-items:center;position:relative}
+  .img svg{width:78%;height:88%}
+  .ribbon{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+  .tag{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:5px;letter-spacing:.2px}
+  .tag.hot{background:var(--red);color:#fff}
+  .tag.limit{background:var(--navy);color:#fff}
+  .tag.deal{background:var(--green);color:#fff}
+  .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .cat{font-size:.75rem;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800}
+  .name{font-weight:800;font-size:1.06rem;line-height:1.25}
+  .stars{color:#f5a623;font-size:.9rem;letter-spacing:1px}
+  .stars small{color:var(--muted);letter-spacing:0;font-weight:700;margin-left:4px}
+  .price{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+  .price .amt{font-family:'Fredoka',sans-serif;font-size:1.9rem;font-weight:700;color:var(--navy)}
+  .price .sb{font-weight:800;color:var(--orange-d)}
+  .unit{color:var(--muted);font-size:.88rem;font-weight:700}
+  .sizes{display:flex;gap:6px;margin-top:4px}
+  .sizes button{flex:1;font:inherit;font-weight:800;font-size:.82rem;padding:6px 0;border-radius:7px;border:2px solid var(--line);background:#fff;cursor:pointer}
+  .sizes button.on{border-color:var(--orange);background:#fff6e5}
+  .stock{margin-top:auto;padding-top:8px;font-size:.85rem;font-weight:800}
+  .stock.low{color:var(--red)}
+  .stock.ok{color:var(--green)}
+  .empty{grid-column:1/-1;text-align:center;padding:50px;color:var(--muted);font-weight:700}
+
+  /* ---------- Modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(10,15,30,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .overlay.show{display:flex}
+  .modal{background:#fff;border-radius:18px;max-width:780px;width:100%;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;position:relative;max-height:92vh;overflow-y:auto;animation:pop .2s ease}
+  @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:none;opacity:1}}
+  .modal .mimg{background:linear-gradient(180deg,#f7f9fc,#e3ebf6);display:grid;place-items:center;padding:24px;min-height:280px}
+  .modal .mimg svg{width:100%;max-height:280px}
+  .modal .minfo{padding:26px;display:flex;flex-direction:column;gap:10px}
+  .modal h2{font-family:'Fredoka',sans-serif;font-size:1.6rem;line-height:1.15}
+  .modal .desc{color:#3b4252;line-height:1.5}
+  .rules{background:#fff6e5;border-left:4px solid var(--orange);padding:10px 12px;border-radius:6px;font-weight:700;font-size:.92rem}
+  .rules div+div{margin-top:4px}
+  .close{position:absolute;top:10px;right:12px;background:#fff;border:none;font-size:1.6rem;width:38px;height:38px;border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);z-index:2}
+  footer{background:var(--navy);color:#c9d1e4;text-align:center;padding:22px;font-size:.9rem}
+  footer b{color:var(--orange)}
+
+  @media (max-width:640px){
+    .top{padding:10px 14px;gap:10px}
+    .logo{font-size:1.3rem}
+    .wallet{display:none}
+    .banner{flex-direction:column;align-items:flex-start;padding:20px}
+    .banner h1{font-size:1.6rem}
+    .banner svg{display:none}
+    .hero,.toolbar,main{padding:0 14px}
+    .modal{grid-template-columns:1fr}
+    .modal .mimg{min-height:200px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <div class="logo">
+      <svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="#fca311"/><circle cx="20" cy="20" r="13.5" fill="none" stroke="#14213d" stroke-width="2" stroke-dasharray="3 2"/>
+        <text x="20" y="25.5" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="14" fill="#14213d">SB</text>
+      </svg>
+      Startup<span>Supply</span>&nbsp;Co.
+    </div>
+    <div class="search">
+      <select id="catSelect" aria-label="Category">
+        <option value="all">All</option>
+        <option value="foam">Foam</option>
+        <option value="boxes">Boxes</option>
+        <option value="craft">Craft Supplies</option>
+        <option value="cushion">Cushioning</option>
+      </select>
+      <input id="q" type="search" placeholder="Search supplies… (try “tape” or “foam”)" aria-label="Search">
+      <button aria-label="Search" onclick="render()">
+        <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="#14213d" stroke-width="2.6"/><path d="M15.5 15.5 21 21" stroke="#14213d" stroke-width="2.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="wallet">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="8" width="26" height="18" rx="4" fill="#fca311"/><rect x="3" y="6" width="20" height="6" rx="3" fill="#ffd166"/><circle cx="23" cy="17" r="2.5" fill="#14213d"/></svg>
+      <div>Paying with<b>Startup Bucks (SB)</b></div>
+    </div>
+  </div>
+  <nav class="nav" id="nav">
+    <button data-cat="all" class="active">🛍️ All Supplies</button>
+    <button data-cat="foam">🧽 Foam</button>
+    <button data-cat="boxes">📦 Boxes</button>
+    <button data-cat="craft">✂️ Craft Supplies</button>
+    <button data-cat="cushion">🫧 Cushioning</button>
+    <button data-cat="limited">⏳ Limited Stock</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="banner">
+    <div>
+      <h1>Build it. Protect it. Launch it.</h1>
+      <p>Spend your team's Startup Bucks wisely — every material counts toward your final design. Shop carefully: some items are limited!</p>
+      <span class="pill">💰 All prices in SB = Startup Bucks</span>
+    </div>
+    <svg width="210" height="140" viewBox="0 0 210 140" aria-hidden="true">
+      <g transform="translate(20 30)">
+        <path d="M0 40 L60 15 L120 40 L60 65Z" fill="#e7b77c"/>
+        <path d="M0 40 L60 65 L60 115 L0 90Z" fill="#c98f4d"/>
+        <path d="M120 40 L60 65 L60 115 L120 90Z" fill="#b07a3c"/>
+        <path d="M60 65 L60 115" stroke="#8a5d2a" stroke-width="2"/>
+        <rect x="35" y="30" width="50" height="8" transform="skewY(-22) translate(0 38)" fill="#f4e1bd" opacity=".9"/>
+      </g>
+      <g transform="translate(150 20)">
+        <circle cx="20" cy="20" r="20" fill="#14213d"/><circle cx="20" cy="20" r="14" fill="none" stroke="#fca311" stroke-width="2" stroke-dasharray="3 2"/>
+        <text x="20" y="26" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="15" fill="#fca311">SB</text>
+      </g>
+      <g transform="translate(160 75)">
+        <circle cx="15" cy="15" r="15" fill="#14213d"/><text x="15" y="20" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="11" fill="#fca311">SB</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<div class="toolbar">
+  <div class="count" id="count"></div>
+  <label>Sort:
+    <select id="sort">
+      <option value="feat">Featured</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+      <option value="az">Name: A–Z</option>
+    </select>
+  </label>
+</div>
+
+<main id="grid"></main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal"></div>
+</div>
+
+<footer>
+  <b>Startup Supply Co.</b> · All prices listed in Startup Bucks (SB) · Purchases are final — plan your budget before you shop!
+</footer>
+
+<script>
+/* ---------- Vector product art ---------- */
+const pores = (x,y,w,h,c) => {let s='';for(let i=0;i<26;i++){const px=x+((i*37)%w),py=y+((i*53)%h);s+=`<circle cx="${px}" cy="${py}" r="${1.4+(i%3)*.6}" fill="${c}" opacity=".55"/>`;}return s;};
+
+const art = {
+  foamRect: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="140" rx="70" ry="8" fill="#000" opacity=".08"/>
+    <g transform="rotate(-8 100 80)"><path d="M40 45 L160 45 L172 33 L52 33Z" fill="#ffe08a"/><path d="M160 45 L172 33 L172 113 L160 125Z" fill="#e6b93b"/>
+    <rect x="40" y="45" width="120" height="80" rx="3" fill="#ffd23f"/>${pores(46,52,108,66,'#e0a800')}</g>
+    <g font-family="Fredoka" font-weight="700" font-size="11" fill="#14213d"><text x="70" y="154">5–6 in</text></g></svg>`,
+
+  foamSquare: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="140" rx="55" ry="8" fill="#000" opacity=".08"/>
+    <path d="M55 40 L135 40 L150 26 L70 26Z" fill="#ffb3c8"/><path d="M135 40 L150 26 L150 106 L135 120Z" fill="#e0789a"/>
+    <rect x="55" y="40" width="80" height="80" rx="3" fill="#ff8fab"/>${pores(60,46,70,68,'#d9577e')}
+    <path d="M55 130 H135" stroke="#14213d" stroke-width="2"/><path d="M55 126v8M135 126v8" stroke="#14213d" stroke-width="2"/>
+    <text x="95" y="150" text-anchor="middle" font-family="Fredoka" font-weight="700" font-size="11" fill="#14213d">4 × 4</text></svg>`,
+
+  foamPieces: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="140" rx="75" ry="8" fill="#000" opacity=".08"/>
+    <g transform="rotate(12 60 95)"><rect x="35" y="72" width="48" height="48" rx="4" fill="#7bdff2"/>${pores(39,76,40,40,'#3aa9c2')}</g>
+    <g transform="rotate(-10 135 85)"><rect x="110" y="58" width="50" height="50" rx="4" fill="#b2f7a5"/>${pores(114,62,42,42,'#5cbf4c')}</g>
+    <g transform="rotate(25 95 55)"><rect x="75" y="30" width="42" height="42" rx="4" fill="#cdb4db"/>${pores(79,34,34,34,'#9a72b5')}</g>
+    <path d="M150 120 l8 -14 l8 14z" fill="#ffd23f"/></svg>`,
+
+  box: s => `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="142" rx="${30+s*14}" ry="8" fill="#000" opacity=".08"/>
+    <g transform="translate(100 ${142-s*4}) scale(${.55+s*.22}) translate(-60 -110)">
+      <path d="M0 40 L60 15 L120 40 L60 65Z" fill="#e7b77c"/>
+      <path d="M0 40 L60 65 L60 115 L0 90Z" fill="#c98f4d"/>
+      <path d="M120 40 L60 65 L60 115 L120 90Z" fill="#b07a3c"/>
+      <path d="M30 27.5 L90 52.5" stroke="#f4e1bd" stroke-width="9" opacity=".9"/>
+      <path d="M60 65 V115" stroke="#8a5d2a" stroke-width="2"/>
+      <g transform="translate(14 64) skewY(22)"><rect width="30" height="16" rx="2" fill="#fff" opacity=".85"/><path d="M5 5h20M5 10h14" stroke="#14213d" stroke-width="2"/></g>
+    </g></svg>`,
+
+  cardboard: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="142" rx="60" ry="7" fill="#000" opacity=".08"/>
+    <g transform="rotate(-6 100 80)"><rect x="50" y="18" width="100" height="118" rx="3" fill="#c98f4d"/>
+    <rect x="50" y="18" width="100" height="118" rx="3" fill="none" stroke="#9c6a32" stroke-width="2"/>
+    <path d="M150 18 v118" stroke="#e7b77c" stroke-width="5"/>
+    ${[0,1,2,3,4,5,6,7,8,9].map(i=>`<path d="M${153} ${24+i*11} q2 3 0 6" stroke="#9c6a32" fill="none" stroke-width="1.5"/>`).join('')}
+    <rect x="60" y="28" width="72" height="30" rx="4" fill="#f4e1bd" opacity=".5"/>
+    <circle cx="96" cy="95" r="20" fill="#f4e1bd" opacity=".35"/><path d="M84 95 q12 12 24 0" stroke="#9c6a32" stroke-width="3" fill="none"/></g></svg>`,
+
+  paper: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="142" rx="68" ry="7" fill="#000" opacity=".08"/>
+    <g transform="rotate(4 100 80)"><rect x="40" y="20" width="120" height="116" fill="#f5f2e8" stroke="#cfc9b8"/>
+    <rect x="48" y="28" width="104" height="16" fill="#14213d"/><text x="100" y="40.5" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="9" fill="#fff">THE DAILY STARTUP</text>
+    <rect x="48" y="50" width="48" height="36" fill="#cfd6e3"/><path d="M52 82 l14-16 10 10 8-8 10 14z" fill="#8d9ab5"/>
+    ${[0,1,2,3,4].map(i=>`<path d="M102 ${54+i*7} h50" stroke="#a8a291" stroke-width="3"/>`).join('')}
+    ${[0,1,2,3,4,5].map(i=>`<path d="M48 ${94+i*7} h104" stroke="#a8a291" stroke-width="3"/>`).join('')}</g></svg>`,
+
+  tape: `<svg viewBox="0 0 200 160"><ellipse cx="96" cy="140" rx="62" ry="8" fill="#000" opacity=".08"/>
+    <path d="M110 112 L176 122 L172 140 L104 128Z" fill="#c9d6e6" opacity=".85"/>
+    <path d="M172 122 l4 4 -4 4 4 4 -4 4" stroke="#fff" fill="none"/>
+    <circle cx="88" cy="80" r="52" fill="#d5e2f0"/><circle cx="88" cy="80" r="52" fill="none" stroke="#a9bdd6" stroke-width="3"/>
+    <circle cx="88" cy="80" r="40" fill="none" stroke="#bfd0e4" stroke-width="2"/>
+    <circle cx="88" cy="80" r="26" fill="#c98f4d"/><circle cx="88" cy="80" r="19" fill="#eef1f6"/></svg>`,
+
+  straws: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="146" rx="40" ry="6" fill="#000" opacity=".08"/>
+    ${[['#ef476f',-14],['#06d6a0',-4],['#118ab2',6],['#ffd166',16]].map(([c,r],i)=>`
+      <g transform="rotate(${r} 100 140)"><rect x="${92}" y="14" width="10" height="120" rx="5" fill="#fff"/>
+      ${[0,1,2,3,4,5,6,7].map(k=>`<path d="M92 ${22+k*14} l10 -6" stroke="${c}" stroke-width="4"/>`).join('')}</g>`).join('')}
+    <path d="M68 86 h64 l-8 58 h-48z" fill="#7bdff2" opacity=".75"/><path d="M68 86 h64" stroke="#3aa9c2" stroke-width="3"/></svg>`,
+
+  cotton: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="138" rx="72" ry="8" fill="#000" opacity=".08"/>
+    ${[[62,100,24],[108,104,28],[150,98,20],[86,70,22],[130,68,20]].map(([x,y,r])=>`
+      <g><circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/><circle cx="${x-r*.45}" cy="${y-r*.2}" r="${r*.6}" fill="#fff"/>
+      <circle cx="${x+r*.4}" cy="${y-r*.35}" r="${r*.55}" fill="#fff"/><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#dbe3ee" stroke-width="2"/></g>`).join('')}
+    <ellipse cx="40" cy="128" rx="22" ry="7" fill="#fbe7ef" stroke="#f3c3d4" stroke-width="2"/></svg>`,
+
+  egg: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="138" rx="56" ry="8" fill="#000" opacity=".08"/>
+    <path d="M52 62 q48 -20 96 0 l-12 62 q-36 14 -72 0z" fill="#b9b6ad"/>
+    <path d="M52 62 q48 -20 96 0 q-48 20 -96 0z" fill="#8f8b80"/>
+    <path d="M60 80 q40 14 80 0M64 100 q36 12 72 0" stroke="#a29e93" stroke-width="3" fill="none"/>
+    <ellipse cx="100" cy="58" rx="34" ry="8" fill="#6f6b61"/>
+    <ellipse cx="150" cy="40" rx="14" ry="18" fill="#fff8e7" stroke="#e6d9b8" stroke-width="2"/></svg>`,
+
+  string: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="140" rx="70" ry="8" fill="#000" opacity=".08"/>
+    <circle cx="78" cy="88" r="42" fill="#f4a261"/>
+    ${[-50,-25,0,25,50,75].map(a=>`<ellipse cx="78" cy="88" rx="42" ry="16" transform="rotate(${a} 78 88)" fill="none" stroke="#c4703a" stroke-width="2.5"/>`).join('')}
+    <path d="M114 106 q30 10 40 -10 t30 -10" stroke="#c4703a" stroke-width="3" fill="none"/>
+    <ellipse cx="150" cy="128" rx="28" ry="10" fill="none" stroke="#e63946" stroke-width="6"/></svg>`,
+
+  bubble: `<svg viewBox="0 0 200 160"><ellipse cx="100" cy="142" rx="70" ry="8" fill="#000" opacity=".08"/>
+    <g transform="rotate(-5 100 80)"><rect x="34" y="26" width="132" height="104" rx="8" fill="#d9f2ff" opacity=".85" stroke="#9fd3ef" stroke-width="2"/>
+    ${(()=>{let s='';for(let r=0;r<5;r++)for(let c=0;c<6;c++){const x=50+c*20+(r%2)*10,y=42+r*19;if(x<160)s+=`<circle cx="${x}" cy="${y}" r="8" fill="#eefaff" stroke="#8cc9e8" stroke-width="1.5"/><circle cx="${x-3}" cy="${y-3}" r="2.2" fill="#fff"/>`;}return s;})()}</g></svg>`
+};
+
+/* ---------- Product catalog ---------- */
+const products = [
+  {id:'foamRect', name:'Foam Rectangle (5–6 in)', cat:'foam', price:5, unit:'each', art:art.foamRect,
+   limit:'Max 3 per team', supply:true, stars:5, reviews:128,
+   desc:'A light, springy rectangle of foam — great for padding the sides or bottom of your design. Cuts easily to fit tight spaces.'},
+  {id:'foamSquare', name:'Foam Square (4 × 4)', cat:'foam', price:10, unit:'each', art:art.foamSquare,
+   limit:'Max 2 per team', supply:true, stars:5, reviews:96,
+   desc:'A thick 4 × 4 foam square that absorbs impact well. Perfect as a shock-absorbing base layer.'},
+  {id:'foamPieces', name:'Foam Pieces (4 × 4)', cat:'foam', price:10, unit:'each', art:art.foamPieces, stars:4, reviews:74,
+   desc:'Assorted 4 × 4 foam pieces. Use them to fill gaps, build bumpers, or cushion corners.'},
+  {id:'box', name:'Pre-Made Box', cat:'boxes', variants:[{l:'Small',p:10},{l:'Medium',p:15},{l:'Large',p:20}], unit:'each', art:null, stars:5, reviews:210,
+   desc:'Skip the building step! A ready-to-use cardboard box. Pick the size that fits your plan — bigger boxes cost more Startup Bucks.'},
+  {id:'cardboard', name:'Cardboard', cat:'craft', price:5, unit:'per cereal-box panel', art:art.cardboard, stars:4, reviews:152,
+   desc:'One panel of cereal-box cardboard. Fold it, cut it, and shape it into walls, dividers, or a custom container.'},
+  {id:'paper', name:'Paper or Newspaper', cat:'craft', price:1, unit:'per sheet', art:art.paper, stars:4, reviews:63, deal:true,
+   desc:'A single sheet of paper or newspaper. Crumple it for cheap filler or roll it into tubes for structure.'},
+  {id:'tape', name:'Tape', cat:'craft', price:2, unit:"per arm's length", art:art.tape, stars:5, reviews:301,
+   desc:"Measured from fingertips to shoulder. Holds everything together — but plan ahead, it adds up fast!"},
+  {id:'straws', name:'Straws', cat:'craft', price:1, unit:'each', art:art.straws, stars:4, reviews:88, deal:true,
+   desc:'Lightweight plastic straws. Combine several for a crumple zone or a supporting frame.'},
+  {id:'cotton', name:'Cotton Balls or Pads', cat:'cushion', price:1, unit:'each', art:art.cotton, stars:4, reviews:57, deal:true,
+   desc:'Soft and fluffy. Pack them around your product to soften small bumps and fill empty space.'},
+  {id:'egg', name:'Egg Carton Cup', cat:'cushion', price:2, unit:'each', art:art.egg, stars:5, reviews:119,
+   desc:'One cup cut from an egg carton — shaped to cradle a round or fragile object.'},
+  {id:'string', name:'Rubber Band or String', cat:'craft', price:1, unit:"each, or per arm's length", art:art.string, stars:4, reviews:45, deal:true,
+   desc:"One rubber band, or one arm's length of string. Use it to suspend, tie down, or bundle parts together."},
+  {id:'bubble', name:'Bubble Wrap or Plastic Foam', cat:'cushion', price:6, unit:'per hand-sized piece', art:art.bubble, stars:5, reviews:240,
+   desc:'A hand-sized piece of bubble wrap or plastic foam — premium protection at a premium price.'}
+];
+
+const boxSel = {box:0};
+const priceOf = p => p.variants ? p.variants[boxSel[p.id]].p : p.price;
+const artOf = p => p.id==='box' ? art.box(boxSel.box) : p.art;
+const starStr = n => '★'.repeat(n)+'☆'.repeat(5-n);
+
+let curCat = 'all';
+const grid = document.getElementById('grid');
+
+function render(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const sort = document.getElementById('sort').value;
+  let list = products.filter(p=>{
+    const catOK = curCat==='all' || (curCat==='limited' ? p.supply : p.cat===curCat);
+    const qOK = !q || (p.name+' '+p.desc+' '+p.cat).toLowerCase().includes(q);
+    return catOK && qOK;
+  });
+  if(sort==='low') list.sort((a,b)=>priceOf(a)-priceOf(b));
+  if(sort==='high') list.sort((a,b)=>priceOf(b)-priceOf(a));
+  if(sort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
+
+  document.getElementById('count').textContent = `${list.length} item${list.length===1?'':'s'} available`;
+  if(!list.length){grid.innerHTML='<div class="empty">No supplies match your search. Try another word!</div>';return;}
+
+  grid.innerHTML = list.map(p=>`
+    <article class="card" tabindex="0" data-id="${p.id}">
+      <div class="img">${artOf(p)}
+        <div class="ribbon">
+          ${p.supply?'<span class="tag hot">⏳ While supplies last</span>':''}
+          ${p.limit?`<span class="tag limit">${p.limit}</span>`:''}
+          ${p.deal?'<span class="tag deal">Budget pick</span>':''}
+        </div>
+      </div>
+      <div class="body">
+        <div class="cat">${catName(p.cat)}</div>
+        <div class="name">${p.name}</div>
+        <div class="stars">${starStr(p.stars)}<small>(${p.reviews})</small></div>
+        <div class="price"><span class="amt">${priceOf(p)}</span><span class="sb">SB</span></div>
+        <div class="unit">${p.unit}</div>
+        ${p.variants?`<div class="sizes">${p.variants.map((v,i)=>`<button class="${i===boxSel[p.id]?'on':''}" data-size="${i}">${v.l}</button>`).join('')}</div>`:''}
+        <div class="stock ${p.supply?'low':'ok'}">${p.supply?'Limited stock — order soon':'In stock'}</div>
+      </div>
+    </article>`).join('');
+}
+
+const catName = c => ({foam:'Foam',boxes:'Boxes',craft:'Craft Supplies',cushion:'Cushioning'})[c];
+
+grid.addEventListener('click', e=>{
+  const sz = e.target.closest('[data-size]');
+  if(sz){ e.stopPropagation(); boxSel.box = +sz.dataset.size; render(); return; }
+  const card = e.target.closest('.card'); if(card) openModal(card.dataset.id);
+});
+grid.addEventListener('keydown', e=>{
+  const card = e.target.closest('.card');
+  if(card && (e.key==='Enter'||e.key===' ') && !e.target.closest('[data-size]')){e.preventDefault();openModal(card.dataset.id);}
+});
+
+function openModal(id){
+  const p = products.find(x=>x.id===id);
+  const m = document.getElementById('modal');
+  const draw = () => {
+    m.innerHTML = `
+      <button class="close" aria-label="Close">×</button>
+      <div class="mimg">${artOf(p)}</div>
+      <div class="minfo">
+        <div class="cat">${catName(p.cat)}</div>
+        <h2>${p.name}</h2>
+        <div class="stars">${starStr(p.stars)}<small>(${p.reviews} ratings)</small></div>
+        <div class="price"><span class="amt">${priceOf(p)}</span><span class="sb">SB</span><span class="unit">&nbsp;${p.unit}</span></div>
+        ${p.variants?`<div class="sizes">${p.variants.map((v,i)=>`<button class="${i===boxSel[p.id]?'on':''}" data-msize="${i}">${v.l} · ${v.p} SB</button>`).join('')}</div>`:''}
+        <p class="desc">${p.desc}</p>
+        ${(p.limit||p.supply)?`<div class="rules">${p.limit?`<div>🚫 ${p.limit}</div>`:''}${p.supply?'<div>⏳ While supplies last</div>':''}</div>`:''}
+        <div class="stock ${p.supply?'low':'ok'}">${p.supply?'Limited stock — order soon':'✔ In stock'}</div>
+      </div>`;
+  };
+  draw();
+  m.onclick = e=>{
+    const b = e.target.closest('[data-msize]');
+    if(b){ boxSel.box = +b.dataset.msize; draw(); render(); }
+    if(e.target.closest('.close')) closeModal();
+  };
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('show');}
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ---------- Nav / filters ---------- */
+function setCat(c){
+  curCat = c;
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.cat===c));
+  const sel = document.getElementById('catSelect');
+  sel.value = [...sel.options].some(o=>o.value===c) ? c : 'all';
+  render();
+}
+document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setCat(b.dataset.cat);});
+document.getElementById('catSelect').addEventListener('change',e=>setCat(e.target.value));
+document.getElementById('q').addEventListener('input',render);
+document.getElementById('sort').addEventListener('change',render);
+
+render();
+</script>
+</body>
+</html>
