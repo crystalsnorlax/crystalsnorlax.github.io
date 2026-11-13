@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roll for Initiative</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+/* Layout: a tavern quest table at night. Three stone panels in a row (the party, the encounter, the hall of heroes);
+   the encounter sits in the middle with the d20 and a parchment dialog box. Stacks to one column on small screens. */
+:root{
+  color-scheme:dark;
+  --night:#17122b; --stone:#272043; --stone-2:#332a57; --edge:#5a4c8f;
+  --text:#efe9ff; --muted:#b9aedb;
+  --parchment:#f3e4bd; --ink:#2a1d14; --ink-soft:#6a5238;
+  --gold:#f6c445; --gold-deep:#b9871a; --ruby:#e0526a; --emerald:#52c98a;
+  --star:rgba(255,255,255,.16); --star-gold:rgba(246,196,69,.22); --shadow:rgba(0,0,0,.45);
+  --display:'Press Start 2P','Courier New',Courier,monospace;
+  --body:'VT323','Courier New',Courier,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--night);color:var(--text);font-family:var(--body);font-size:24px;line-height:1.15;
+  background-image:radial-gradient(var(--star) 1px,transparent 1.6px),radial-gradient(var(--star-gold) 1px,transparent 1.6px);
+  background-size:46px 46px,83px 83px;background-position:0 0,20px 30px}
+h1,h2,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+button,textarea{font:inherit;color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+.wrap{max-width:1500px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px;display:grid;gap:22px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px}
+.title{display:grid;gap:10px;min-width:0}
+h1{font-family:var(--display);font-size:clamp(18px,3vw,34px);line-height:1.3;color:var(--gold);text-shadow:4px 4px 0 var(--shadow);text-wrap:balance}
+.sub{color:var(--muted);font-size:26px}
+.tools{display:flex;gap:10px;flex-wrap:wrap}
+
+/* buttons */
+.btn{font-family:var(--display);font-size:11px;line-height:1.4;padding:11px 14px;background:var(--stone-2);color:var(--text);border:4px solid var(--edge);border-radius:0;cursor:pointer;box-shadow:4px 4px 0 var(--shadow)}
+.btn:hover:not(:disabled){background:var(--edge)}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--shadow)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:var(--gold);color:var(--ink);border-color:var(--parchment)}
+.btn.primary:hover:not(:disabled){background:var(--parchment)}
+.btn.big{font-size:clamp(13px,1.5vw,18px);padding:18px 22px;width:100%}
+.btn.warn{border-color:var(--ruby)}
+.btn:focus-visible,textarea:focus-visible,.x:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* panels */
+.board{display:grid;grid-template-columns:minmax(250px,1fr) minmax(330px,1.35fr) minmax(250px,1fr);gap:26px;align-items:start}
+.panel{background:var(--stone);border:4px solid var(--edge);box-shadow:8px 8px 0 var(--shadow);padding:18px;display:grid;gap:16px;min-width:0}
+.ph{font-family:var(--display);font-size:13px;line-height:1.5;color:var(--gold);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ph .count{color:var(--muted)}
+.note{color:var(--muted);font-size:22px}
+.sample{background:var(--stone-2);border:2px dashed var(--gold-deep);padding:10px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:22px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
+textarea{width:100%;min-height:96px;resize:vertical;background:var(--night);border:4px solid var(--edge);border-radius:0;padding:10px 12px;font-size:24px;line-height:1.15}
+textarea::placeholder{color:var(--muted);opacity:.8}
+
+/* roster + hall lists */
+.list{display:grid;gap:8px;max-height:46vh;overflow:auto;padding-right:4px}
+.card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--stone-2);border:2px solid var(--edge);padding:6px 8px}
+.badge{width:38px;height:38px;display:grid;place-items:center;font-family:var(--display);font-size:14px;color:var(--ink);border:3px solid var(--ink);box-shadow:inset -3px -3px 0 rgba(0,0,0,.22)}
+.num{width:38px;height:38px;display:grid;place-items:center;font-family:var(--display);font-size:12px;color:var(--ink);background:var(--gold);border:3px solid var(--ink)}
+.who{min-width:0;display:grid}
+.who b{font-weight:400;font-size:26px;overflow-wrap:anywhere}
+.who small{font-size:20px;color:var(--muted)}
+.x{font-family:var(--display);font-size:11px;background:transparent;border:2px solid transparent;color:var(--muted);cursor:pointer;padding:8px 9px}
+.x:hover{color:var(--text);border-color:var(--edge)}
+.card.new{animation:arrive .6s steps(6) 1}
+@keyframes arrive{0%{background:var(--gold);transform:translateX(-14px)}100%{background:var(--stone-2);transform:none}}
+.empty{color:var(--muted);font-size:22px;padding:8px 2px}
+
+/* encounter */
+.stage{justify-items:center;text-align:center}
+.stage .ph{width:100%}
+.die{width:min(230px,58%);aspect-ratio:1;max-width:100%}
+.die svg{width:100%;height:100%;display:block;filter:drop-shadow(6px 6px 0 var(--shadow))}
+.die text{font-family:var(--display);font-size:38px;fill:var(--ink)}
+.die.rolling svg{animation:tumble .45s linear infinite}
+.die.landed svg{animation:land .35s steps(4) 1}
+@keyframes tumble{0%{transform:translateY(0) rotate(0)}25%{transform:translateY(-16px) rotate(90deg)}50%{transform:translateY(0) rotate(180deg)}75%{transform:translateY(-9px) rotate(270deg)}100%{transform:translateY(0) rotate(360deg)}}
+@keyframes land{0%{transform:scale(1.18)}100%{transform:scale(1)}}
+.hint{color:var(--muted);font-size:20px}
+.dialog{width:100%;background:var(--parchment);color:var(--ink);border:4px solid var(--ink);box-shadow:inset 0 0 0 4px var(--gold-deep),6px 6px 0 var(--shadow);padding:22px 20px;display:grid;gap:10px;min-height:210px;align-content:center;min-width:0}
+.dlabel{font-family:var(--display);font-size:10px;line-height:1.5;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase}
+.dname{font-family:var(--display);font-size:clamp(20px,3.4vw,46px);line-height:1.3;overflow-wrap:anywhere;text-wrap:balance}
+.dclass{font-size:28px;color:var(--ink-soft)}
+.dline{font-size:28px}
+.stage.revealed .dname{animation:land .35s steps(4) 1}
+
+@media (max-width:1000px){
+  .board{grid-template-columns:1fr}
+  .stage{order:-1}
+  .list{max-height:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .die.rolling svg,.die.landed svg,.card.new,.stage.revealed .dname{animation:none}
+  .btn:active:not(:disabled){transform:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="title">
+      <h1>Roll for Initiative</h1>
+      <p class="sub">The die decides who presents next. Every hero gets one turn.</p>
+    </div>
+    <div class="tools">
+      <button type="button" class="btn" id="soundBtn" aria-pressed="true">Sound: On</button>
+      <button type="button" class="btn" id="fullBtn">Full screen</button>
+    </div>
+  </header>
+
+  <main class="board">
+    <section class="panel" aria-labelledby="partyH">
+      <h2 class="ph" id="partyH"><span>The Party</span><span class="count" id="partyCount">0 waiting</span></h2>
+      <div class="sample" id="sampleNote" hidden>
+        <span>These are sample heroes.</span>
+        <button type="button" class="btn" id="clearSample">Remove samples</button>
+      </div>
+      <ul class="list" id="party"></ul>
+      <p class="empty" id="partyEmpty" hidden>No one is waiting. Add heroes below.</p>
+      <label class="sr" for="names">Names to add, one per line</label>
+      <textarea id="names" placeholder="Type names or project titles, one per line" autocomplete="off" spellcheck="false"></textarea>
+      <div class="row">
+        <button type="button" class="btn primary" id="addBtn">Add to party</button>
+      </div>
+      <p class="note">One per line, or separate with commas.</p>
+    </section>
+
+    <section class="panel stage" id="stage" aria-labelledby="stageH">
+      <h2 class="ph" id="stageH"><span>The Encounter</span><span class="count" id="rollOut"></span></h2>
+      <div class="die" id="die" aria-hidden="true">
+        <svg viewBox="0 0 200 200" role="img">
+          <polygon points="100,10 22,55 100,45" fill="#fbe08a"/>
+          <polygon points="100,10 178,55 100,45" fill="#f6c445"/>
+          <polygon points="22,55 45,135 100,45" fill="#f6c445"/>
+          <polygon points="178,55 100,45 155,135" fill="#e2ad2c"/>
+          <polygon points="22,55 22,145 45,135" fill="#e2ad2c"/>
+          <polygon points="178,55 178,145 155,135" fill="#c8921d"/>
+          <polygon points="22,145 100,190 45,135" fill="#c8921d"/>
+          <polygon points="178,145 100,190 155,135" fill="#b9871a"/>
+          <polygon points="45,135 155,135 100,190" fill="#d9a125"/>
+          <polygon points="100,45 155,135 45,135" fill="#fff0b8"/>
+          <g fill="none" stroke="#2a1d14" stroke-width="5" stroke-linejoin="round">
+            <polygon points="100,10 178,55 178,145 100,190 22,145 22,55"/>
+            <polygon points="100,45 155,135 45,135"/>
+            <path d="M100 10V45M22 55L100 45L178 55M22 55L45 135L22 145M178 55L155 135L178 145M45 135L100 190L155 135"/>
+          </g>
+          <text id="num" x="100" y="121" text-anchor="middle">20</text>
+        </svg>
+      </div>
+      <button type="button" class="btn primary big" id="rollBtn">Roll for Initiative</button>
+      <p class="hint">or press the space bar</p>
+      <div class="dialog">
+        <p class="dlabel" id="dlabel">The Guild Master says</p>
+        <p class="dname" id="dname" hidden></p>
+        <p class="dclass" id="dclass" hidden></p>
+        <p class="dline" id="dline"></p>
+      </div>
+      <p class="sr" id="status" role="status"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="hallH">
+      <h2 class="ph" id="hallH"><span>Hall of Heroes</span><span class="count" id="hallCount">0 done</span></h2>
+      <ol class="list" id="hall"></ol>
+      <p class="empty" id="hallEmpty">No one has presented yet.</p>
+      <div class="row">
+        <button type="button" class="btn" id="undoBtn">Undo last pick</button>
+        <button type="button" class="btn" id="againBtn">Start over</button>
+        <button type="button" class="btn warn" id="clearBtn">Clear all names</button>
+      </div>
+      <p class="note">Use the arrow next to a hero to send them back to the party.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var KEY='rfi_state_v1';
+  var CLASSES=['Wizard','Rogue','Paladin','Bard','Ranger','Cleric','Druid','Monk','Sorcerer','Barbarian','Warlock','Fighter','Artificer'];
+  var HUES=[265,350,45,300,130,200,95,25,320,10,280,215,170];
+  var QUESTS=[
+    'steps forward to face the Slide Deck Dragon!',
+    'unrolls the Scroll of Presentation!',
+    'enters the Dungeon of Public Speaking!',
+    'answers the call of the Guild!',
+    'rises as the whole tavern falls silent.',
+    'draws a laser pointer from its sheath!',
+    'accepts the quest. The party cheers!',
+    'approaches the Great Projector of Destiny.'
+  ];
+  var SAMPLE=['Aria','Bram','Cora','Dax','Elle','Finn'];
+  var state={party:[],heroes:[],muted:false};
+  var rolling=false, seq=0, twTimer=null, clearArmed=null;
+  var reduced=false;
+  try{reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+
+  function $(id){return document.getElementById(id)}
+  var els={party:$('party'),hall:$('hall'),partyCount:$('partyCount'),hallCount:$('hallCount'),partyEmpty:$('partyEmpty'),hallEmpty:$('hallEmpty'),
+    sampleNote:$('sampleNote'),names:$('names'),die:$('die'),num:$('num'),rollBtn:$('rollBtn'),stage:$('stage'),rollOut:$('rollOut'),
+    dlabel:$('dlabel'),dname:$('dname'),dclass:$('dclass'),dline:$('dline'),status:$('status'),
+    undoBtn:$('undoBtn'),againBtn:$('againBtn'),clearBtn:$('clearBtn'),soundBtn:$('soundBtn'),fullBtn:$('fullBtn')};
+
+  /* ---------- storage ---------- */
+  function load(){
+    try{
+      var raw=localStorage.getItem(KEY); if(!raw) return false;
+      var s=JSON.parse(raw);
+      if(!s||!Array.isArray(s.party)||!Array.isArray(s.heroes)) return false;
+      var ok=function(p){return p&&typeof p.name==='string'&&p.name};
+      state.party=s.party.filter(ok).map(clean); state.heroes=s.heroes.filter(ok).map(clean); state.muted=!!s.muted;
+      return true;
+    }catch(e){return false}
+  }
+  function clean(p){return {id:String(p.id||uid()),name:String(p.name).slice(0,60),sample:!!p.sample,roll:p.roll|0}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+  /* ---------- helpers ---------- */
+  function uid(){seq++;return 'h'+Date.now().toString(36)+'_'+seq}
+  function hash(str){var h=2166136261;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+  function clsOf(name){return hash(name.toLowerCase())%CLASSES.length}
+  function lvlOf(name){return hash(name.toLowerCase()+'|lv')%20+1}
+  function rand(n){
+    try{
+      if(window.crypto&&crypto.getRandomValues){
+        var a=new Uint32Array(1), lim=Math.floor(4294967296/n)*n;
+        do{crypto.getRandomValues(a)}while(a[0]>=lim);
+        return a[0]%n;
+      }
+    }catch(e){}
+    return Math.floor(Math.random()*n);
+  }
+  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+  function hasSample(){return state.party.concat(state.heroes).some(function(p){return p.sample})}
+
+  /* ---------- rendering ---------- */
+  function who(p){
+    var w=el('div','who');
+    w.appendChild(el('b',null,p.name));
+    w.appendChild(el('small',null,'Lv '+lvlOf(p.name)+' '+CLASSES[clsOf(p.name)]));
+    return w;
+  }
+  function render(newId){
+    els.party.textContent='';
+    state.party.forEach(function(p){
+      var li=el('li','card');
+      var b=el('span','badge',p.name.trim().charAt(0).toUpperCase()||'?');
+      b.style.background='hsl('+HUES[clsOf(p.name)]+' 70% 68%)';
+      li.appendChild(b); li.appendChild(who(p));
+      var x=el('button','x','X'); x.type='button'; x.setAttribute('aria-label','Remove '+p.name);
+      x.addEventListener('click',function(){removeFromParty(p.id)});
+      li.appendChild(x); els.party.appendChild(li);
+    });
+    els.hall.textContent='';
+    state.heroes.forEach(function(p,i){
+      var li=el('li','card'+(p.id===newId?' new':''));
+      li.appendChild(el('span','num',String(i+1))); li.appendChild(who(p));
+      var x=el('button','x','↩'); x.type='button'; x.setAttribute('aria-label','Send '+p.name+' back to the party');
+      x.addEventListener('click',function(){sendBack(p.id)});
+      li.appendChild(x); els.hall.appendChild(li);
+    });
+    var n=state.party.length, h=state.heroes.length;
+    els.partyCount.textContent=n+' waiting';
+    els.hallCount.textContent=h+' done';
+    els.partyEmpty.hidden=n>0; els.hallEmpty.hidden=h>0;
+    els.sampleNote.hidden=!hasSample();
+    els.rollBtn.disabled=rolling||n===0;
+    els.rollBtn.textContent=n? 'Roll for Initiative' : (h? 'Quest Complete' : 'Add Heroes First');
+    els.undoBtn.disabled=rolling||h===0; els.againBtn.disabled=rolling||h===0;
+    els.clearBtn.disabled=rolling||(n===0&&h===0);
+  }
+  function stopType(){if(twTimer){clearInterval(twTimer);twTimer=null}}
+  function say(label,name,cls,line,typed){
+    stopType();
+    els.dlabel.textContent=label;
+    els.dname.textContent=name||''; els.dname.hidden=!name;
+    els.dclass.textContent=cls||''; els.dclass.hidden=!cls;
+    els.status.textContent=(name? name+'. ':'')+line;
+    if(typed&&!reduced){
+      var i=0; els.dline.textContent='';
+      twTimer=setInterval(function(){i++;els.dline.textContent=line.slice(0,i);if(i>=line.length)stopType()},24);
+    } else els.dline.textContent=line;
+  }
+  function idle(){
+    els.stage.classList.remove('revealed'); els.rollOut.textContent='';
+    var n=state.party.length, h=state.heroes.length;
+    if(n===0&&h===0) say('The Guild Master says','','','Gather your party. Add heroes on the left to begin.');
+    else if(n===0) say('Quest complete','','','Every hero has presented. The realm is saved!');
+    else say('The Guild Master says','','',n+(n===1?' hero awaits.':' heroes await.')+' Roll the die to choose who goes next.');
+  }
+  function commit(newId){save();render(newId)}
+
+  /* ---------- actions ---------- */
+  function addNames(){
+    if(rolling) return;
+    var list=els.names.value.split(/[\n,]+/).map(function(s){return s.trim().replace(/\s+/g,' ').slice(0,60)}).filter(Boolean);
+    if(!list.length){els.names.focus();return}
+    if(hasSample()){state.party=state.party.filter(function(p){return !p.sample});state.heroes=state.heroes.filter(function(p){return !p.sample})}
+    list.forEach(function(nm){state.party.push({id:uid(),name:nm,sample:false,roll:0})});
+    els.names.value=''; commit(); idle(); els.names.focus();
+  }
+  function removeFromParty(id){if(rolling)return;state.party=state.party.filter(function(p){return p.id!==id});commit();idle()}
+  function sendBack(id){
+    if(rolling) return;
+    var i=state.heroes.findIndex(function(p){return p.id===id}); if(i<0) return;
+    state.party.push(state.heroes.splice(i,1)[0]); commit(); idle();
+  }
+  function undo(){if(rolling||!state.heroes.length)return;state.party.push(state.heroes.pop());commit();idle()}
+  function startOver(){if(rolling||!state.heroes.length)return;state.party=state.heroes.concat(state.party);state.heroes=[];commit();idle()}
+  function clearSamples(){if(rolling)return;state.party=state.party.filter(function(p){return !p.sample});state.heroes=state.heroes.filter(function(p){return !p.sample});commit();idle()}
+  function disarm(){if(clearArmed){clearTimeout(clearArmed);clearArmed=null}els.clearBtn.textContent='Clear all names'}
+  function clearAll(){
+    if(rolling) return;
+    if(!clearArmed){els.clearBtn.textContent='Click again to confirm';clearArmed=setTimeout(disarm,3500);return}
+    disarm(); state.party=[];state.heroes=[];commit();idle();
+  }
+
+  function roll(){
+    if(rolling||!state.party.length) return;
+    rolling=true; disarm(); render();
+    var pick=state.party[rand(state.party.length)], d=rand(20)+1;
+    els.stage.classList.remove('revealed'); els.die.classList.remove('landed'); els.die.classList.add('rolling');
+    els.rollOut.textContent='';
+    say('The die tumbles','','','Who will be chosen?');
+    var spin=setInterval(function(){els.num.textContent=rand(20)+1;tick()},90);
+    setTimeout(function(){
+      clearInterval(spin);
+      els.die.classList.remove('rolling'); void els.die.offsetWidth; els.die.classList.add('landed');
+      els.num.textContent=d;
+      state.party=state.party.filter(function(p){return p.id!==pick.id});
+      pick.roll=d; state.heroes.push(pick);
+      rolling=false; commit(pick.id);
+      var line=CLASSES[clsOf(pick.name)]+' '+QUESTS[rand(QUESTS.length)];
+      var lead=d===20?'A natural 20! A legendary entrance. ':(d===1?'A natural 1, but true heroes present anyway. ':'');
+      els.rollOut.textContent='Rolled '+d;
+      els.stage.classList.add('revealed');
+      say('A hero is chosen',pick.name,'Level '+lvlOf(pick.name)+' '+CLASSES[clsOf(pick.name)],lead+'The '+line,true);
+      fanfare();
+    },reduced?350:1900);
+  }
+
+  /* ---------- sound ---------- */
+  var actx=null;
+  function ac(){
+    if(state.muted) return null;
+    try{var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;actx=actx||new C();if(actx.state==='suspended')actx.resume();return actx}catch(e){return null}
+  }
+  function beep(f,at,dur,vol){
+    var c=ac(); if(!c) return;
+    try{
+      var o=c.createOscillator(),g=c.createGain(),t=c.currentTime+at;
+      o.type='square';o.frequency.value=f;
+      g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+0.02);
+    }catch(e){}
+  }
+  function tick(){beep(200+rand(240),0,0.05,0.02)}
+  function fanfare(){[523,659,784,1047].forEach(function(f,i){beep(f,i*0.11,0.2,0.045)})}
+  function paintSound(){els.soundBtn.textContent='Sound: '+(state.muted?'Off':'On');els.soundBtn.setAttribute('aria-pressed',String(!state.muted))}
+
+  /* ---------- wiring ---------- */
+  $('addBtn').addEventListener('click',addNames);
+  els.names.addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();addNames()}});
+  els.rollBtn.addEventListener('click',roll);
+  els.undoBtn.addEventListener('click',undo);
+  els.againBtn.addEventListener('click',startOver);
+  els.clearBtn.addEventListener('click',clearAll);
+  $('clearSample').addEventListener('click',clearSamples);
+  els.soundBtn.addEventListener('click',function(){state.muted=!state.muted;save();paintSound();if(!state.muted)beep(660,0,0.12,0.04)});
+  var canFull=!!(document.documentElement.requestFullscreen&&document.fullscreenEnabled);
+  els.fullBtn.hidden=!canFull;
+  els.fullBtn.addEventListener('click',function(){
+    try{
+      if(document.fullscreenElement) document.exitFullscreen();
+      else{var r=document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(function(){})}
+    }catch(e){}
+  });
+  document.addEventListener('fullscreenchange',function(){els.fullBtn.textContent=document.fullscreenElement?'Exit full screen':'Full screen'});
+  document.addEventListener('keydown',function(e){
+    if(e.code!=='Space') return;
+    var t=e.target&&e.target.tagName; if(t==='TEXTAREA'||t==='INPUT'||t==='BUTTON') return;
+    e.preventDefault(); roll();
+  });
+
+  /* ---------- start ---------- */
+  if(!load()){
+    state.party=SAMPLE.map(function(nm){return {id:uid(),name:nm,sample:true,roll:0}});
+  }
+  paintSound(); render(); idle();
+})();
+</script>
+</body>
+</html>
