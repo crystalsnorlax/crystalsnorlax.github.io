@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Chapter 5 Study Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Public+Sans:wght@400;500;600;700&family=Crimson+Pro:ital,wght@1,500;1,600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column of numbered lesson stations; each station = learn panel + drag activity on tan ledger paper. Single light look (off-white page, tan paper, sage ledger accent) by request. */
+:root{
+  color-scheme:light;
+  --bg:#f8f4ec;
+  --surface:#fffdf9;
+  --paper:#f1e8d8;
+  --tan:#e6d8bf;
+  --line:#e6dccb;
+  --rule:#c9b493;
+  --ink:#3b3229;
+  --muted:#7b6d5d;
+  --accent:#5f7a55;
+  --accent-ink:#fffdf9;
+  --accent-soft:#e6ebdb;
+  --good:#4e7d50;
+  --good-soft:#e3eedd;
+  --bad:#a84d3c;
+  --bad-soft:#f6e3db;
+  --tip:#f4e9cc;
+  --tip-ink:#5c4820;
+  --shadow:0 1px 2px rgba(92,72,40,.06),0 6px 18px rgba(92,72,40,.07);
+  --f-display:"Zilla Slab",Rockwell,"Roboto Slab",Georgia,serif;
+  --f-body:"Public Sans","Segoe UI",system-ui,sans-serif;
+  --f-ledger:"Crimson Pro",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0;color:var(--ink)}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.bar-in{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar-title{font-family:var(--f-display);font-weight:700;font-size:17px}
+.meter{flex:1;min-width:160px;display:flex;align-items:center;gap:10px}
+.meter-track{flex:1;height:6px;border-radius:3px;background:var(--tan);overflow:hidden}
+.meter-fill{height:100%;width:0;background:var(--accent);transition:width .4s}
+.meter-label{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.jump{display:flex;gap:6px;flex-wrap:wrap;width:100%}
+.jump a{font-size:12.5px;text-decoration:none;color:var(--muted);border-radius:999px;padding:3px 11px;background:var(--paper)}
+.jump a.done{color:var(--good);background:var(--good-soft)}
+.jump a:hover{color:var(--ink);background:var(--tan)}
+
+/* hero */
+.hero{padding:44px 0 26px;display:grid;gap:14px}
+.eyebrow{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.hero h1{font-size:clamp(32px,6vw,48px)}
+.hero p.lead{max-width:62ch;color:var(--muted);font-size:17px}
+.los{display:grid;gap:8px;margin-top:6px}
+.lo{display:flex;gap:12px;align-items:baseline}
+.lo b{font-family:var(--f-mono);font-size:13px;color:var(--accent);background:var(--accent-soft);padding:1px 8px;border-radius:4px}
+.howto{font-size:14px;color:var(--muted);background:var(--paper);border-radius:8px;padding:10px 14px;max-width:66ch}
+
+/* stations */
+.station{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:110px}
+.st-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:20px 22px 12px}
+.st-num{font-family:var(--f-mono);font-size:13px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--muted);flex:none}
+.station.complete .st-num{background:var(--good);color:var(--accent-ink)}
+.st-head h2{font-size:23px;flex:1;min-width:180px}
+.st-tag{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.tip-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--tip);color:var(--tip-ink);border-radius:999px;padding:5px 13px;font-size:13.5px;font-weight:600;cursor:pointer}
+.tip-btn svg{width:15px;height:15px}
+.tip-btn:hover{background:color-mix(in srgb,var(--tip) 80%,var(--rule))}
+.tip-btn[aria-expanded="true"]{background:var(--tip-ink);color:var(--tip)}
+.tips{margin:0 22px 14px;background:var(--tip);color:var(--tip-ink);border-radius:8px;padding:14px 16px;font-size:15px}
+.tips ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.tips strong{font-weight:700}
+
+.learn{padding:0 22px 20px;display:grid;gap:12px;max-width:72ch}
+.learn ul,.learn ol{margin:0;padding-left:22px;display:grid;gap:4px}
+.key{background:var(--paper);padding:10px 14px;border-radius:8px}
+.term{font-weight:700}
+
+details.break{border-radius:8px;padding:0 14px;background:var(--bg)}
+details.break summary{cursor:pointer;padding:10px 0;font-weight:600;color:var(--accent)}
+details.break[open]{padding-bottom:12px}
+details.break .bd{display:grid;gap:8px}
+
+/* activity */
+.act{border-top:1px solid var(--line);background:var(--paper);padding:20px 22px 22px;display:grid;gap:14px}
+.act-title{font-weight:700;font-size:15px;display:flex;gap:8px;align-items:center}
+.act-title span{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.bank{min-height:58px;display:flex;flex-wrap:wrap;gap:8px;padding:12px;border:1.5px dashed var(--rule);border-radius:10px;background:color-mix(in srgb,var(--surface) 60%,var(--paper));align-content:flex-start}
+.bank::before{content:"Response bank";width:100%;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.bank.empty::after{content:"All placed. Press Check.";font-size:13px;color:var(--muted)}
+
+.chip{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 12px;box-shadow:0 1px 2px rgba(92,72,40,.08);
+  font-family:var(--f-ledger);font-style:italic;font-weight:600;font-size:17px;line-height:1.25;text-align:left;max-width:100%}
+.chip .amt{font-family:var(--f-mono);font-style:normal;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
+.chip.plain{font-family:var(--f-body);font-style:normal;font-weight:500;font-size:14.5px}
+.chip:hover{border-color:var(--rule);box-shadow:0 2px 6px rgba(92,72,40,.12)}
+.chip.selected{outline:2px solid var(--accent);outline-offset:1px}
+.chip.lifting{opacity:.35}
+.chip.good{border-color:color-mix(in srgb,var(--good) 45%,transparent);background:var(--good-soft)}
+.chip.bad{border-color:color-mix(in srgb,var(--bad) 45%,transparent);background:var(--bad-soft)}
+.chip.good::after{content:"✓";color:var(--good);font-style:normal;font-family:var(--f-body);font-weight:700}
+.chip.bad::after{content:"✕";color:var(--bad);font-style:normal;font-family:var(--f-body);font-weight:700}
+.ghost{position:fixed;left:0;top:0;pointer-events:none;z-index:100;box-shadow:0 10px 24px rgba(92,72,40,.22);cursor:grabbing;opacity:.96}
+
+.zone{border-radius:8px;transition:background .15s,border-color .15s}
+.zone.hot,.bank.hot{border-color:var(--accent)!important;background:var(--accent-soft)!important}
+.selecting .zone,.selecting .bank{border-color:var(--accent)}
+
+.slots{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center}
+.row .prompt{font-size:15px;min-width:0}
+.row .prompt b{font-family:var(--f-mono);font-size:12.5px;color:var(--accent);margin-right:6px}
+.slot{min-height:46px;border:1.5px dashed var(--rule);background:var(--surface);display:flex;align-items:center;padding:4px;cursor:pointer;min-width:0}
+.slot.filled{border-style:solid;border-color:var(--line)}
+.slot:not(.filled)::before{content:attr(data-ph);color:var(--muted);font-size:13px;padding-left:8px}
+.slot .chip{width:100%;box-shadow:none;border-color:transparent}
+.slot .chip.good,.slot .chip.bad{border-color:transparent}
+@media (max-width:620px){.row{grid-template-columns:1fr;gap:6px}}
+
+/* ledger-style heading activity */
+.ledger-sheet{background:var(--surface);border-radius:6px;padding:6px 0;max-width:620px;width:100%;margin:0 auto;box-shadow:var(--shadow)}
+.ledger-sheet .lrow{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;border-bottom:1px solid var(--rule);padding:6px 10px;gap:8px}
+.ledger-sheet .lrow:last-child{border-bottom:3px double var(--rule)}
+.ledger-sheet .lab{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;line-height:1.2}
+.ledger-sheet .slot{background:transparent;border-color:var(--line);justify-content:center}
+.ledger-sheet .slot .chip{justify-content:center;font-size:20px;background:var(--bg)}
+
+/* bins */
+.bins{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.bin{border:1.5px dashed var(--rule);background:var(--surface);padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-width:0}
+.bin-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.bin-head h4{margin:0;font-family:var(--f-display);font-size:17px}
+.bin-sum{font-family:var(--f-mono);font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.bin-sum.match{color:var(--good)}
+.bin .chip{width:100%}
+
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:7px 16px;font-weight:600;font-size:14.5px;cursor:pointer}
+.btn:hover{background:color-mix(in srgb,var(--accent) 88%,var(--ink))}
+.btn.ghosty{background:var(--surface);color:var(--accent);border-color:var(--line)}
+.btn.ghosty:hover{background:var(--accent-soft)}
+.feedback{font-size:15px;border-radius:8px;padding:10px 14px}
+.feedback:empty{display:none}
+.feedback.ok{background:var(--good-soft);color:var(--ink)}
+.feedback.no{background:var(--bad-soft);color:var(--ink)}
+.feedback.info{background:var(--accent-soft);color:var(--ink)}
+.balance-note{font-family:var(--f-mono);font-size:14px;text-align:right;color:var(--muted)}
+.balance-note.match{color:var(--good)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.now td{background:var(--accent-soft);font-weight:600}
+
+.mnemonic{display:flex;gap:6px;flex-wrap:wrap;font-family:var(--f-mono);font-size:14px}
+.mnemonic span{padding:2px 8px;border-radius:4px;background:var(--paper)}
+.mnemonic b{color:var(--accent)}
+
+footer{margin-top:36px;color:var(--muted);font-size:13.5px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+body{padding-block:0 56px}
+.wrap{max-width:780px}
+.bar{padding-top:10px;padding-bottom:8px}
+.bar-in{gap:8px 14px}
+.bar-title{font-family:var(--f-display);font-weight:700;font-size:17px;text-decoration:none;color:var(--ink)}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;min-height:46px;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1.5px solid var(--rule);border-radius:10px;padding:8px 14px 8px 40px}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:12px;top:13px;width:20px;height:20px;color:var(--muted)}
+.results{position:absolute;left:0;right:0;top:52px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);z-index:20;display:grid;max-height:60vh;overflow:auto}
+.results a{display:grid;gap:2px;padding:12px 14px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--line);min-height:48px}
+.results a:last-child{border-bottom:0}
+.results a:hover,.results a:focus-visible{background:var(--accent-soft)}
+.results b{font-family:var(--f-display);font-size:17px}
+.results small{color:var(--muted);font-size:13.5px;line-height:1.4}
+.results mark{background:var(--tip);color:var(--tip-ink);border-radius:3px;padding:0 2px}
+.results .none{padding:14px;color:var(--muted);font-size:15px}
+.jump{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.jump a{white-space:nowrap;flex:none;min-height:34px;display:inline-flex;align-items:center;padding:3px 13px;font-size:13.5px}
+.hero{padding:26px 0 8px}
+.updated{font-size:13px;color:var(--muted)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.prog{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.quick{margin-top:18px;background:var(--paper);border-radius:10px;padding:12px 16px;font-size:15px}
+.quick a{color:var(--accent);font-weight:600}
+.grp{font-family:var(--f-display);font-size:19px;margin:22px 0 8px}
+.cards{display:grid;gap:8px}
+.card{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:58px}
+.card:hover{border-color:var(--rule);background:#fffefb}
+.card .cn,.t-toggle .cn{font-family:var(--f-mono);font-size:13px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--muted);flex:none}
+.card .ct{display:grid;gap:1px;min-width:0;flex:1}
+.card .ct b{font-size:16.5px}
+.card .ct small{color:var(--muted);font-size:14px}
+.card.done .cn,.topic.complete .t-toggle .cn{background:var(--good);color:var(--accent-ink)}
+.card.done::after{content:"Done";font-size:12px;font-weight:700;color:var(--good);letter-spacing:.06em;text-transform:uppercase}
+.btn.big{min-height:44px;padding:9px 18px;font-size:15px}
+.topic{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:130px}
+.topic.flash{border-color:var(--accent)}
+.t-toggle{width:100%;display:flex;align-items:center;gap:12px;text-align:left;border:0;background:transparent;padding:14px 16px;min-height:62px;cursor:pointer}
+.t-title{font-family:var(--f-display);font-weight:700;font-size:20px;flex:1;min-width:0;line-height:1.2}
+.chev{width:12px;height:12px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin:0 6px 4px;flex:none}
+.topic.open .chev{transform:rotate(-135deg);margin-top:6px;margin-bottom:0}
+.topic.open .t-toggle{border-bottom:1px solid var(--line)}
+.t-body{display:grid;gap:18px;padding:18px 18px 16px}
+.blk{display:grid;gap:10px}
+.bh{font-family:var(--f-body);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.blk.learn{padding:0;max-width:none}
+.blk.learn>*{margin:0}
+.tipsblk{background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:14px 16px}
+.tipsblk .bh{color:var(--tip-ink)}
+.tipsblk ul{margin:0;padding-left:20px;display:grid;gap:8px}
+.t-body .act{border:1px solid var(--line);border-radius:10px}
+.totop{justify-self:start;color:var(--accent);font-weight:600;text-decoration:none;min-height:40px;display:inline-flex;align-items:center}
+.chain{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.chain li{display:flex;gap:12px;align-items:baseline;background:var(--paper);border-radius:8px;padding:10px 14px}
+.chain b{font-family:var(--f-mono);font-size:13px;color:var(--accent);flex:none}
+.chip{min-height:44px}
+.slot,.bin{min-height:56px}
+.btn{min-height:44px}
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <a class="bar-title" href="#top">Chapter 5 Study Guide</a>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search (try: void)" autocomplete="off" aria-label="Search the study guide">
+      <div class="results" id="results" hidden></div>
+    </div>
+    <nav class="jump" aria-label="Jump to a topic"><a href="#vocab">1 Words</a><a href="#endorse">2 Endorse</a><a href="#stub">3 Stub</a><a href="#words">4 Check words</a><a href="#rec1">5 Reconcile: sort</a><a href="#rec2">6 Reconcile: math</a><a href="#journal">7 Debits</a><a href="#dish">8 Bounced check</a><a href="#petty">9 Petty cash</a><a href="#replen">10 Replenish</a><a href="#mix">11 Which skill?</a><a href="#quiz">12 Practice test</a><a href="#sheet">13 Cheat sheet</a></nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="hero" id="top">
+    <div class="eyebrow">Accounting · Chapter 5</div>
+    <h1>Cash Control Systems</h1>
+    <p class="lead">Everything on the Chapter 5 test in one place. Tap a topic below, or use the search box and the buttons across the top, to jump to what you need. Each topic has the lesson, tips and tricks, and a practice activity.</p>
+    <div class="toolbar">
+      <button class="btn big" type="button" id="expandAll">Open all topics</button>
+      <button class="btn big ghosty" type="button" id="collapseAll">Close all topics</button>
+      <span class="prog" id="prog" aria-live="polite">0 of 13 topics done</span>
+    </div>
+    <div class="updated">Last updated: Nov. 19, 2026 · Example business: Lakeshore Bike Shop</div>
+  </header>
+  <div class="quick"><strong>Short on time?</strong> Open the <a href="#sheet">cheat sheet</a>, or take the <a href="#quiz">practice test</a> to see what you still need to study.</div>
+  <h2 class="grp" style="font-size:22px">Contents</h2>
+  <h3 class="grp">5-1 · Checking account</h3><div class="cards"><a class="card" href="#vocab" data-id="vocab"><span class="cn">1</span><span class="ct"><b>Learn the 6 key words</b><small>Outstanding, dishonored, EFT, debit card, petty cash</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#endorse" data-id="endorse"><span class="cn">2</span><span class="ct"><b>Endorse a check</b><small>Blank, special and restrictive</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#stub" data-id="stub"><span class="cn">3</span><span class="ct"><b>Fill out a check stub</b><small>Eight steps and the running balance</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#words" data-id="words"><span class="cn">4</span><span class="ct"><b>Write the amount in words</b><small>Dollars, “and,” cents over 100</small></span><span class="ck" aria-hidden="true"></span></a></div><h3 class="grp">5-2 · Bank reconciliation</h3><div class="cards"><a class="card" href="#rec1" data-id="rec1"><span class="cn">5</span><span class="ct"><b>Decide what goes where</b><small>Which items change the bank or the stub</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#rec2" data-id="rec2"><span class="cn">6</span><span class="ct"><b>Do the reconciliation math</b><small>Adjusted bank and stub balances</small></span><span class="ck" aria-hidden="true"></span></a></div><h3 class="grp">5-3 · Debit cards and dishonored checks</h3><div class="cards"><a class="card" href="#journal" data-id="journal"><span class="cn">7</span><span class="ct"><b>Pick the account to debit</b><small>Service charge, debit card, petty cash setup</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#dish" data-id="dish"><span class="cn">8</span><span class="ct"><b>Record a dishonored check</b><small>Check plus fee, Accounts Receivable</small></span><span class="ck" aria-hidden="true"></span></a></div><h3 class="grp">5-4 · Petty cash</h3><div class="cards"><a class="card" href="#petty" data-id="petty"><span class="cn">9</span><span class="ct"><b>Build a petty cash report</b><small>Payments, recorded balance, short, replenish</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#replen" data-id="replen"><span class="cn">10</span><span class="ct"><b>Record a replenish entry</b><small>Why Petty Cash stays out</small></span><span class="ck" aria-hidden="true"></span></a></div><h3 class="grp">Put it together</h3><div class="cards"><a class="card" href="#mix" data-id="mix"><span class="cn">11</span><span class="ct"><b>Which skill is this?</b><small>Sort tasks by lesson</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#quiz" data-id="quiz"><span class="cn">12</span><span class="ct"><b>Practice test</b><small>Eight mixed questions</small></span><span class="ck" aria-hidden="true"></span></a><a class="card" href="#sheet" data-id="sheet"><span class="cn">13</span><span class="ct"><b>Cheat sheet</b><small>Formulas and traps on one page</small></span><span class="ck" aria-hidden="true"></span></a></div>
+  <h2 class="grp" style="font-size:22px;margin-top:30px">Topics</h2>
+
+  <section class="topic" id="vocab" data-id="vocab">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-vocab"><span class="cn">1</span><span class="t-title">Key vocabulary</span><span class="st-tag">5-1 to 5-4</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-vocab" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>Learn these six words first. Every later station uses them.</p>
+      <p><span class="term">Outstanding deposit</span>: a deposit recorded on the check stub but not yet on the bank statement.</p>
+      <p><span class="term">Outstanding check</span>: a check that was written and recorded but has not yet been paid by the bank.</p>
+      <p><span class="term">Dishonored check</span>: a check the bank refuses to pay, for example because the writer's account does not have enough money (NSF).</p>
+      <p><span class="term">Electronic funds transfer (EFT)</span>: paying cash by computer, with no check or paper.</p>
+      <p><span class="term">Debit card</span>: a bank card that takes the amount of a purchase straight out of the checking account.</p>
+      <p><span class="term">Petty cash</span>: cash kept on hand for making small payments.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Outstanding = still out there.</strong> An outstanding deposit or check is one you recorded that the bank has not shown yet.</li><li><strong>Deposit goes in, check goes out.</strong> Outstanding <em>deposit</em> = money coming in. Outstanding <em>check</em> = money going out.</li><li><strong>NSF</strong> stands for <strong>N</strong>ot <strong>S</strong>ufficient <strong>F</strong>unds. A dishonored check is a bounced check.</li><li><strong>EFT</strong> has no paper at all: no check, no cash. The money just moves by computer.</li><li><strong>Debit card</strong> takes the money out of your checking account right away. It is not a loan like a credit card.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-vocab"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="endorse" data-id="endorse">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-endorse"><span class="cn">2</span><span class="t-title">Endorsing a check</span><span class="st-tag">5-1</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-endorse" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>An <span class="term">endorsement</span> is the signature and instructions on the back of a check that transfer or deposit it. There are three kinds. The business is Lakeshore Bike Shop, owned by Tom Alvarez.</p>
+      <div class="tw"><table>
+        <thead><tr><th>Type</th><th>What you write</th><th>Safety</th></tr></thead>
+        <tbody>
+          <tr><td>Blank</td><td>Signature only</td><td>Lowest</td></tr>
+          <tr><td>Special</td><td>Pay to the order of [new owner] + signature</td><td>Medium</td></tr>
+          <tr><td>Restrictive</td><td>For deposit only to the account of [business] + signature</td><td>Highest</td></tr>
+        </tbody>
+      </table></div></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Blank = bare.</strong> Just a signature. Anyone who finds the check could cash it, so it is the riskiest.</li><li><strong>Special = Specific person.</strong> It names who gets the money: <em>Pay to the order of</em> a name.</li><li><strong>Restrictive = Restricted to the bank.</strong> <em>For deposit only</em> means the check can only be deposited. It is the safest.</li><li>Write the endorsement on the <strong>back</strong>, above the line that says DO NOT WRITE, STAMP, OR SIGN BELOW THIS LINE.</li><li>Always finish with the signature. The signature is the same name as on the front: the person or business the check was written to.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-endorse"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="stub" data-id="stub">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-stub"><span class="cn">3</span><span class="t-title">The check stub, step by step</span><span class="st-tag">5-1</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-stub" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>The <span class="term">check stub</span> is your own record of every check and deposit. It keeps a running balance. Here is a worked example for Lakeshore Bike Shop.</p>
+      <div class="formula">
+        <span>Balance brought forward ......... 1,500.00</span>
+        <span>Amount deposited ................. <b>+ 300.00</b></span>
+        <span>Subtotal ......................... 1,800.00</span>
+        <span>Amount this check ................ <b>− 250.00</b></span>
+        <span>Balance carried forward .......... 1,550.00</span>
+      </div>
+      <p>Put the eight stub steps in order. Two of them involve math; do them in your head or on paper as you go.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li>Chant: <strong>Amount, Date, To, For, Deposit, Subtotal, This check, Balance.</strong></li><li><strong>Add before you subtract.</strong> Subtotal = balance brought forward + deposit. Balance carried forward = subtotal − this check.</li><li><strong>Check your answer:</strong> the new balance should be smaller than the subtotal, unless there was no check.</li><li>Fill the stub <strong>first</strong>, then write the check. They must show the same amount, date, payee and purpose.</li><li>The <strong>OTHER</strong> line is for things the bank charges you or adds, like a service charge. Subtract it right there, then write a second subtotal.</li><li>Money in the stub is always written with cents. 300 becomes <strong>300.00</strong>.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-stub"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="words" data-id="words">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-words"><span class="cn">4</span><span class="t-title">Writing the amount in words</span><span class="st-tag">5-1</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-words" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>The words on a check must match the numbers. Use this frame every time:</p>
+      <div class="key"><strong>[dollars in words]</strong> and <strong>[cents]/100</strong> ———————— DOLLARS</div>
+      <p>Match each amount to the way it is correctly written on the check. Three of the six responses are traps.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Dollars in words, cents as a fraction.</strong> $145.60 becomes <em>One hundred forty-five and 60/100</em>.</li><li><strong>Only one “and.”</strong> Use it once, right before the cents. Never write “one hundred <em>and</em> forty-five.”</li><li><strong>Cents are always over 100:</strong> 5 cents is <strong>05/100</strong>, not 5/100. Even 00 cents is written 00/100.</li><li>Use a <strong>hyphen</strong> for 21 to 99 when two words are joined: twenty-five, forty-five.</li><li>Finish with a long line out to the word <strong>DOLLARS</strong> so nobody can add words after yours.</li><li>Mix-up warning: <strong>sixty-three</strong> and <strong>thirty-six</strong> look alike. Read the number slowly.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-words"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="rec1" data-id="rec1">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-rec1"><span class="cn">5</span><span class="t-title">Bank reconciliation: where does each item go?</span><span class="st-tag">5-2</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-rec1" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>A <span class="term">bank reconciliation</span> compares the bank statement to your check stubs and explains any difference. The goal: the <span class="term">adjusted bank balance</span> and the <span class="term">adjusted check stub balance</span> must be equal.</p>
+      <p>Sort each item for Lakeshore Bike Shop. Four bins: two change the bank balance, one changes the stub balance, and one is not used at all.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Bank side:</strong> things the bank doesn't know about yet. Outstanding <strong>deposits are added</strong>, outstanding <strong>checks are subtracted</strong>.</li><li><strong>Stub side:</strong> things your stub doesn't know about yet. A bank <strong>service charge is subtracted</strong>.</li><li><strong>VOID checks never matter.</strong> A voided check was never sent, so it isn't outstanding and it isn't subtracted.</li><li>A check that already appears on the statement is <strong>cleared</strong>. It is not outstanding.</li><li>Ask: <strong>Who has not heard about it yet?</strong> The bank? Fix the bank side. Me? Fix my stub.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-rec1"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="rec2" data-id="rec2">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-rec2"><span class="cn">6</span><span class="t-title">Bank reconciliation: the math</span><span class="st-tag">5-2</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-rec2" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><div class="formula">
+        <span><b>Adjusted bank balance</b> = Bank statement balance + Outstanding deposits − Outstanding checks</span>
+        <span><b>Adjusted stub balance</b> = Latest stub balance − Service charge</span>
+      </div>
+      <p>Lakeshore Bike Shop facts: bank statement balance <strong>3,100.00</strong>. Outstanding deposit <strong>400.00</strong>. Outstanding checks <strong>220.00</strong> and <strong>75.00</strong>. Service charge <strong>12.00</strong>. Latest check stub balance <strong>3,217.00</strong>. Check No. 222 was VOID.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Bank side:</strong> statement balance + outstanding deposits − outstanding checks.</li><li><strong>Stub side:</strong> latest stub balance − service charge.</li><li><strong>Add the outstanding checks together first</strong>, then subtract the total once. It cuts down on mistakes.</li><li><strong>The two adjusted balances MUST match.</strong> If they don't, check your addition, then look for a missing check or charge.</li><li>Use the <strong>latest</strong> check stub balance, the one from the last stub written, not the first.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-rec2"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="journal" data-id="journal">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-journal"><span class="cn">7</span><span class="t-title">Which account is debited?</span><span class="st-tag">5-3</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-journal" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>Each transaction below debits one account. Match each transaction to the account that is <strong>debited</strong>. Cash is credited in all four, so it is a trap here.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Cash is the credit</strong> in almost every entry in this chapter. Money leaves the checking account, so Cash is credited.</li><li><strong>Always ask: what did I get or what did I use up?</strong> You get supplies: debit Supplies. The bank takes a fee: debit Miscellaneous Expense.</li><li><strong>Document numbers:</strong> <strong>C</strong> means a check you wrote (C + check number). <strong>M</strong> means a memorandum, used for debit card payments and bank-originated items like a service charge or a dishonored check.</li><li><strong>Setting up petty cash</strong> debits Petty Cash because the fund is now an asset, and credits Cash.</li><li><strong>Dishonored check:</strong> the customer owes you again, so debit that customer's Accounts Receivable.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-journal"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="dish" data-id="dish">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-dish"><span class="cn">8</span><span class="t-title">Dishonored checks and document numbers</span><span class="st-tag">5-3</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-dish" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>A <span class="term">dishonored check</span> comes back unpaid. Your bank takes the money out of your account again and may charge a fee. Example: Priya Shah gave Lakeshore Bike Shop a <strong>180.00</strong> check. It bounced and the bank charged a <strong>30.00</strong> fee.</p>
+      <div class="formula"><span>Debit <b>Accounts Receivable—Priya Shah</b> &nbsp; 210.00</span><span>Credit <b>Cash</b> &nbsp; 210.00</span></div></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Dishonored check amount = the check + the bank fee.</strong> The customer owes both again.</li><li>The credit side is <strong>Cash</strong> because the bank took the money back out of your account.</li><li>The debit is to <strong>Accounts Receivable for that customer</strong>, not to Sales and not to an expense.</li><li><strong>C vs. M:</strong> if <em>you</em> wrote a check, it is C with the check number. If the bank or a card did it, it is M with a memorandum number.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-dish"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="petty" data-id="petty">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-petty"><span class="cn">9</span><span class="t-title">The petty cash report</span><span class="st-tag">5-4</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-petty" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>A <span class="term">petty cash fund</span> is set at a fixed amount. When it runs low, you total the slips, count the cash, and write one check to refill it.</p>
+      <p>Lakeshore Bike Shop's fund is <strong>200.00</strong>. Two payment slips: <strong>Supplies 48.20</strong> and <strong>Advertising 36.00</strong>. The cash counted in the box is <strong>115.30</strong>.</p>
+      <div class="formula">
+        <span>Total payments ...... 48.20 + 36.00</span>
+        <span>Recorded balance .... fund − payments</span>
+        <span>Cash short .......... recorded balance − cash counted</span>
+        <span>Replenish ........... payments + short</span>
+      </div></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Recorded balance</strong> = fund amount − total payments. It is what <em>should</em> be in the box.</li><li><strong>Short</strong> = recorded balance − cash actually counted. If the box has less than it should, it is short.</li><li><strong>Replenish check = total payments + short.</strong> This brings the box back up to the full fund amount.</li><li>Quick check: <strong>cash counted + replenish check = fund amount.</strong> If not, you made a mistake.</li><li>Slip amounts go in the column for the <strong>account they were spent on</strong>: Supplies, Advertising Expense, Miscellaneous Expense.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-petty"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="replen" data-id="replen">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-replen"><span class="cn">10</span><span class="t-title">The replenish journal entry</span><span class="st-tag">5-4</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-replen" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>Replenishing the fund: you write Check No. 330 for 84.70 (48.20 + 36.00 + 0.50). Sort the accounts into the entry. One response does not belong.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li><strong>Petty Cash is NOT in the replenish entry.</strong> The fund stays at 200.00. Only Cash goes down.</li><li><strong>One credit, several debits.</strong> Credit Cash once for the whole check. Debit each expense account for its slip.</li><li><strong>Cash Short</strong> is a <strong>debit</strong> to Cash Short and Over, like an expense.</li><li><strong>Check that it balances:</strong> debits add to 84.70, credits add to 84.70.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-replen"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="mix" data-id="mix">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-mix"><span class="cn">11</span><span class="t-title">Which skill is this?</span><span class="st-tag">Put it together</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-mix" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>Everything in this chapter connects. You have done each skill by itself. Now see how they fit together.</p>
+      <ol class="chain">
+        <li><b>5-1</b><span>Write checks and record deposits on the check stub.</span></li>
+        <li><b>5-2</b><span>Compare the stub to the bank statement. Outstanding items and the service charge explain the difference.</span></li>
+        <li><b>5-3</b><span>Debit card purchases, dishonored checks and bank charges become journal entries.</span></li>
+        <li><b>5-4</b><span>Petty cash: report the slips, count the cash, replenish with one check and one journal entry.</span></li>
+      </ol></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li>Ask where the money is: <strong>a check you wrote</strong> is 5-1, <strong>statement vs. stub</strong> is 5-2, <strong>a card or bounced check</strong> is 5-3, <strong>the small cash box</strong> is 5-4.</li><li>The first topics fed each other. The check stub balance is what you compare to the bank statement in 5-2.</li><li>The service charge, the debit card purchase and the dishonored check each end up as a journal entry.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-mix"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="quiz" data-id="quiz">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-quiz"><span class="cn">12</span><span class="t-title">Checkpoint: mixed practice</span><span class="st-tag">All lessons</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-quiz" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><p>Drag the best response next to each question. Five of the thirteen responses are traps.</p></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li>Question 1: add first (2,000 + 500), then subtract the check (350).</li><li>Question 2: the amount of cents on a check always goes over 100.</li><li>Questions 5 and 7: look back at stations 8 and 9 if you are unsure. That is what the review is for.</li><li>Do the ones you know first, then come back for the rest.</li></ul></div>
+      <div class="blk"><h3 class="bh">Try it</h3><div class="act" id="act-quiz"></div></div>
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+  <section class="topic" id="sheet" data-id="sheet">
+    <button class="t-toggle" type="button" aria-expanded="false" aria-controls="b-sheet"><span class="cn">13</span><span class="t-title">Test-day cheat sheet</span><span class="st-tag">Read me last</span><span class="chev" aria-hidden="true"></span></button>
+    <div class="t-body" id="b-sheet" hidden>
+      <div class="blk learn"><h3 class="bh">Learn</h3><div class="tw"><table>
+        <thead><tr><th>Skill</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>Stub: subtotal</td><td>Balance brought forward <strong>+</strong> deposit</td></tr>
+          <tr><td>Stub: new balance</td><td>Subtotal <strong>−</strong> this check</td></tr>
+          <tr><td>Check words</td><td>[dollars] <strong>and</strong> [cents]/100 ——— DOLLARS. One “and” only.</td></tr>
+          <tr><td>Endorsements</td><td>Blank = signature. Special = pay to the order of. Restrictive = for deposit only.</td></tr>
+          <tr><td>Adjusted bank balance</td><td>Statement <strong>+</strong> outstanding deposits <strong>−</strong> outstanding checks</td></tr>
+          <tr><td>Adjusted stub balance</td><td>Latest stub balance <strong>−</strong> service charge</td></tr>
+          <tr><td>Dishonored check</td><td>Debit Accounts Receivable (check <strong>+</strong> fee), credit Cash</td></tr>
+          <tr><td>Petty cash: short</td><td>Recorded balance <strong>−</strong> cash counted</td></tr>
+          <tr><td>Replenish check</td><td>Total payments <strong>+</strong> short</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Common traps:</strong></p>
+      <ul class="traps">
+        <li>Adding the service charge instead of subtracting it.</li>
+        <li>Counting a VOID check as outstanding.</li>
+        <li>Forgetting the bank fee in a dishonored check.</li>
+        <li>Writing <em>“one hundred <strong>and</strong> forty-five”</em> with an extra “and.”</li>
+        <li>Writing 5/100 instead of <strong>05/100</strong>.</li>
+        <li>Debiting Petty Cash in the replenish entry.</li>
+        <li>Using the first check stub balance instead of the latest one.</li>
+      </ul></div>
+      <div class="blk tipsblk"><h3 class="bh">Tips &amp; tricks</h3><ul><li>Read this page once the night before and once in the morning.</li><li>If you blank on a number: <strong>write the formula first</strong>, then plug in. Partial credit loves a visible plan.</li></ul></div>
+      
+      <a class="totop" href="#top">&uarr; Back to contents</a>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+
+  const ACTS = {
+    vocab:{ title:'Match each term to its definition', kind:'slots', ph:'Drop a term',
+      rows:[
+        {ans:'od',prompt:'A deposit on the check stub that is not yet on the bank statement.'},
+        {ans:'oc',prompt:'A check you wrote and recorded that the bank has not paid yet.'},
+        {ans:'dc',prompt:'A check the bank refuses to pay, for example because of not sufficient funds.'},
+        {ans:'eft',prompt:'Paying cash by computer, with no check or paper.'},
+        {ans:'dbt',prompt:'A bank card that takes a purchase straight out of the checking account.'},
+        {ans:'pc',prompt:'Cash kept on hand for making small payments.'}
+      ],
+      chips:[
+        {ans:'od',text:'Outstanding deposit'},{ans:'oc',text:'Outstanding check'},{ans:'dc',text:'Dishonored check'},
+        {ans:'eft',text:'Electronic funds transfer'},{ans:'dbt',text:'Debit card'},{ans:'pc',text:'Petty cash'},
+        {ans:'none',text:'Blank endorsement'}
+      ],
+      win:'All six matched. "Blank endorsement" was the extra: it belongs to the back of a check.'},
+
+    endorse:{ title:'Name the endorsement', kind:'slots', plain:true, ph:'Drop a type',
+      rows:[
+        {ans:'b',prompt:'X Tom Alvarez'},
+        {ans:'s',prompt:'X Pay to the order of Jordan Lee, Tom Alvarez'},
+        {ans:'r',prompt:'X For deposit only to the account of Lakeshore Bike Shop, Tom Alvarez'}
+      ],
+      chips:[
+        {ans:'b',text:'Blank endorsement'},{ans:'s',text:'Special endorsement'},{ans:'r',text:'Restrictive endorsement'},{ans:'none',text:'Voided endorsement'}
+      ],
+      win:'Correct. Signature only is blank, a named person is special, and "for deposit only" is restrictive and safest.'},
+
+    stub:{ title:'Put the eight stub steps in order', kind:'slots', plain:true, ph:'Drop a step',
+      rows:[1,2,3,4,5,6,7,8].map(n=>({ans:String(n),prompt:'Step '+n})),
+      chips:[
+        {ans:'1',text:'Write the $ amount of the check in the box at the top of the stub.'},
+        {ans:'2',text:'Write the date.'},
+        {ans:'3',text:'Write who the check is TO.'},
+        {ans:'4',text:'Write what the check is FOR.'},
+        {ans:'5',text:'Write the amount deposited and its date.'},
+        {ans:'6',text:'Add the deposit to the balance brought forward to find the SUBTOTAL.'},
+        {ans:'7',text:'Write the AMOUNT THIS CHECK.'},
+        {ans:'8',text:'Subtract it from the subtotal to find the BALANCE CARRIED FORWARD.'}
+      ],
+      win:'In order. Amount, Date, To, For, Deposit, Subtotal, This check, Balance.'},
+
+    words:{ title:'Match each amount to its words', kind:'slots', plain:true, ph:'Drop the words',
+      rows:[
+        {ans:'a',prompt:'<b>$145.60</b>'},
+        {ans:'b',prompt:'<b>$208.05</b>'},
+        {ans:'c',prompt:'<b>$1,325.40</b>'}
+      ],
+      chips:[
+        {ans:'a',text:'One hundred forty-five and 60/100'},
+        {ans:'b',text:'Two hundred eight and 05/100'},
+        {ans:'c',text:'One thousand three hundred twenty-five and 40/100'},
+        {ans:'none',text:'One hundred and forty-five and 60/100'},
+        {ans:'none',text:'Two hundred eight and 5/100'},
+        {ans:'none',text:'One thousand three hundred fifty-two and 40/100'}
+      ],
+      win:'Correct. The traps were an extra "and," a cents amount that was not over 100, and swapped digits (25 vs. 52).'},
+
+    rec1:{ title:'Sort each reconciliation item', kind:'bins', plain:true,
+      bins:[{ans:'add',label:'Add to bank balance'},{ans:'sub',label:'Subtract from bank balance'},{ans:'stub',label:'Subtract from stub balance'},{ans:'skip',label:'Not used'}],
+      chips:[
+        {ans:'add',text:'Outstanding deposit, 400.00'},
+        {ans:'sub',text:'Outstanding Check No. 221, 220.00'},
+        {ans:'sub',text:'Outstanding Check No. 223, 75.00'},
+        {ans:'stub',text:'Bank service charge, 12.00'},
+        {ans:'skip',text:'Check No. 222, marked VOID'},
+        {ans:'skip',text:'Check No. 220, already paid on the statement'}
+      ],
+      win:'Sorted. Deposits are added to the bank side, checks are subtracted from it, the service charge hits your stub, and a VOID or cleared check is not part of the reconciliation.'},
+
+    rec2:{ title:'Do the reconciliation math', kind:'slots', plain:true, ph:'Drop an amount',
+      rows:[
+        {ans:'oc',prompt:'Total outstanding checks (220.00 + 75.00)'},
+        {ans:'adj',prompt:'Adjusted bank balance (3,100.00 + 400.00 − the total above)'},
+        {ans:'adj',prompt:'Adjusted check stub balance (3,217.00 − 12.00)'}
+      ],
+      chips:[
+        {ans:'oc',text:'295.00'},
+        {ans:'adj',text:'3,205.00'},
+        {ans:'adj',text:'3,205.00'},
+        {ans:'none',text:'3,229.00'},
+        {ans:'none',text:'3,505.00'},
+        {ans:'none',text:'3,300.00'}
+      ],
+      win:'They match at 3,205.00, so the account is reconciled. The traps added the 12.00 service charge, ignored the outstanding checks, or forgot the deposit.'},
+
+    journal:{ title:'Match each transaction to its debit', kind:'slots', plain:true, ph:'Drop an account',
+      rows:[
+        {ans:'misc',prompt:'The bank charges a 12.00 service charge.'},
+        {ans:'sup',prompt:'Supplies are bought with a debit card.'},
+        {ans:'ar',prompt:'A customer’s check is dishonored.'},
+        {ans:'pc',prompt:'Cash is paid to set up a petty cash fund.'}
+      ],
+      chips:[
+        {ans:'misc',text:'Miscellaneous Expense'},
+        {ans:'sup',text:'Supplies'},
+        {ans:'ar',text:'Accounts Receivable—the customer'},
+        {ans:'pc',text:'Petty Cash'},
+        {ans:'none',text:'Cash'},
+        {ans:'none',text:'Sales'}
+      ],
+      win:'Correct. Cash is the credit in all four, and Sales is never part of these entries.'},
+
+    dish:{ title:'Complete the dishonored check entry', kind:'slots', plain:true, ph:'Drop an answer',
+      rows:[
+        {ans:'amt',prompt:'Amount debited to Accounts Receivable—Priya Shah (check 180.00 + fee 30.00)'},
+        {ans:'cr',prompt:'Account credited'},
+        {ans:'doc',prompt:'Document type for a bank-originated item'}
+      ],
+      chips:[
+        {ans:'amt',text:'210.00'},
+        {ans:'cr',text:'Cash'},
+        {ans:'doc',text:'Memorandum (M)'},
+        {ans:'none',text:'180.00'},
+        {ans:'none',text:'Sales'},
+        {ans:'none',text:'Check (C)'}
+      ],
+      win:'Correct. 180.00 + 30.00 = 210.00 is debited, Cash is credited, and the document is a memorandum. The 180.00 trap leaves out the bank fee.'},
+
+    petty:{ title:'Build the petty cash report', kind:'slots', plain:true, ph:'Drop an amount',
+      rows:[
+        {ans:'pay',prompt:'Total payments (48.20 + 36.00)'},
+        {ans:'rec',prompt:'Recorded balance (fund 200.00 − payments)'},
+        {ans:'short',prompt:'Cash short (recorded balance − 115.30 counted)'},
+        {ans:'rep',prompt:'Amount to replenish (payments + short)'}
+      ],
+      chips:[
+        {ans:'pay',text:'84.20'},{ans:'rec',text:'115.80'},{ans:'short',text:'0.50'},{ans:'rep',text:'84.70'},
+        {ans:'none',text:'83.70'},{ans:'none',text:'115.30'},{ans:'none',text:'5.00'}
+      ],
+      win:'Correct. Check: 115.30 counted + 84.70 replenish = 200.00. The 83.70 trap subtracts the short instead of adding it.'},
+
+    replen:{ title:'Sort the accounts in the replenish entry', kind:'bins', sums:true, target:84.7,
+      bins:[{ans:'dr',label:'Debit',sum:true},{ans:'cr',label:'Credit',sum:true},{ans:'skip',label:'Not in this entry'}],
+      chips:[
+        {ans:'dr',text:'Supplies',amt:48.2},
+        {ans:'dr',text:'Advertising Expense',amt:36},
+        {ans:'dr',text:'Cash Short and Over',amt:0.5},
+        {ans:'cr',text:'Cash',amt:84.7},
+        {ans:'skip',text:'Petty Cash'}
+      ],
+      win:'In balance at 84.70. Petty Cash stays out because replenishing only refills the box. The fund balance does not change.'},
+
+    mix:{ title:'Sort each task into the lesson it belongs to', kind:'bins', plain:true,
+      bins:[{ans:'u1',label:'5-1 Checks and stubs'},{ans:'u2',label:'5-2 Reconciliation'},{ans:'u3',label:'5-3 Cards and dishonored checks'},{ans:'u4',label:'5-4 Petty cash'}],
+      chips:[
+        {ans:'u1',text:'Write 05/100 for five cents'},
+        {ans:'u1',text:'Subtotal = balance brought forward + deposit'},
+        {ans:'u2',text:'Add an outstanding deposit to the bank balance'},
+        {ans:'u2',text:'Subtract outstanding checks from the bank balance'},
+        {ans:'u3',text:'Debit Accounts Receivable for the bounced check plus its fee'},
+        {ans:'u3',text:'Use a memorandum (M) for a debit card purchase'},
+        {ans:'u4',text:'Count the cash and find the short amount'},
+        {ans:'u4',text:'Replenish check = payments plus short'}
+      ],
+      win:'Sorted. You can now tell which skill a question is asking for, which is half of the test.'},
+
+    quiz:{ title:'Match each question to its answer', kind:'slots', plain:true, ph:'Drop an answer',
+      rows:[
+        {ans:'q1',prompt:'<b>1</b>Balance brought forward 2,000.00, deposit 500.00, check 350.00. What is the balance carried forward?'},
+        {ans:'q2',prompt:'<b>2</b>How is $75.08 written in the fraction part of the check?'},
+        {ans:'q3',prompt:'<b>3</b>A VOID check appears in the reconciliation as…'},
+        {ans:'q4',prompt:'<b>4</b>The bank statement shows a service charge that is not yet on the stub. What do you do?'},
+        {ans:'q5',prompt:'<b>5</b>A customer’s check is dishonored. Which account is credited?'},
+        {ans:'q6',prompt:'<b>6</b>A debit card purchase uses which document number?'},
+        {ans:'q7',prompt:'<b>7</b>What amount is the replenish check written for?'},
+        {ans:'q8',prompt:'<b>8</b>After the replenish entry, the Petty Cash account balance is…'}
+      ],
+      chips:[
+        {ans:'q1',text:'2,150.00'},
+        {ans:'q2',text:'08/100'},
+        {ans:'q3',text:'Not listed at all'},
+        {ans:'q4',text:'Subtract it from the check stub balance'},
+        {ans:'q5',text:'Cash'},
+        {ans:'q6',text:'Memorandum (M)'},
+        {ans:'q7',text:'Total payments plus cash short'},
+        {ans:'q8',text:'Unchanged (still the fund amount)'},
+        {ans:'none',text:'2,350.00'},
+        {ans:'none',text:'Listed as an outstanding check'},
+        {ans:'none',text:'Add it to the bank balance'},
+        {ans:'none',text:'Accounts Receivable'},
+        {ans:'none',text:'Increased by the replenish amount'}
+      ],
+      win:'Checkpoint passed. You are ready for the test. Read the cheat sheet below one more time.'}
+  };
+
+  const fmt = n => n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const el = (tag, cls, text) => { const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; };
+
+
+  
+
+  function makeChip(c, plain){
+    const b = el('button','chip'+(plain?' plain':''));
+    b.type='button'; b.dataset.ans=c.ans;
+    b.append(el('span','t',c.text));
+    if(c.amt!=null){ b.dataset.amt=c.amt; b.append(el('span','amt', c.amt ? fmt(c.amt) : '—')); }
+    return b;
+  }
+  function makeZone(cls, ans, ph){
+    const z = el('div','zone '+cls); z.dataset.ans=ans; z.tabIndex=0; z.setAttribute('role','button');
+    if(ph) z.dataset.ph=ph; return z;
+  }
+
+  function build(key){
+    const cfg = ACTS[key], act = document.getElementById('act-'+key);
+    act.dataset.key=key;
+    const t = el('div','act-title'); t.append(el('span',null,'Try it')); t.append(document.createTextNode(cfg.title)); act.append(t);
+    const bank = el('div','bank'); bank.tabIndex=0; act.append(bank);
+    if(cfg.kind==='slots'){
+      const s = el('div','slots');
+      cfg.rows.forEach(r=>{ const row=el('div','row'); const p=el('div','prompt'); p.innerHTML=r.prompt; row.append(p, makeZone('slot',r.ans,cfg.ph)); s.append(row); });
+      act.append(s);
+    } else if(cfg.kind==='ledger'){
+      const sh = el('div','ledger-sheet');
+      cfg.rows.forEach(r=>{ const row=el('div','lrow'); row.append(el('div','lab',r.prompt), makeZone('slot',r.ans,cfg.ph)); sh.append(row); });
+      act.append(sh);
+    } else {
+      const bins = el('div','bins');
+      cfg.bins.forEach(b=>{
+        const z = makeZone('bin',b.ans); const h=el('div','bin-head'); h.append(el('h4',null,b.label));
+        if(b.sum){ const s=el('span','bin-sum','0.00'); s.dataset.sum=b.ans; h.append(s); }
+        z.append(h); bins.append(z);
+      });
+      act.append(bins);
+      if(cfg.sums){ const n=el('div','balance-note'); n.dataset.note='1'; act.append(n); }
+    }
+    const ctr = el('div','controls');
+    const chk = el('button','btn','Check'); chk.type='button'; chk.onclick=()=>check(act);
+    const show = el('button','btn ghosty','Show answers'); show.type='button'; show.onclick=()=>reveal(act);
+    const rst = el('button','btn ghosty','Reset'); rst.type='button'; rst.onclick=()=>reset(act);
+    ctr.append(chk,show,rst); act.append(ctr);
+    const fb = el('div','feedback'); fb.setAttribute('aria-live','polite'); act.append(fb);
+    shuffle(cfg.chips.map(c=>makeChip(c,cfg.plain))).forEach(c=>bank.append(c));
+    update(act);
+  }
+
+  const bankOf = act => act.querySelector('.bank');
+  function clearMarks(act){ act.querySelectorAll('.chip').forEach(c=>c.classList.remove('good','bad')); const fb=act.querySelector('.feedback'); fb.textContent=''; fb.className='feedback'; }
+  function update(act){
+    act.querySelectorAll('.slot').forEach(z=>z.classList.toggle('filled', !!z.querySelector('.chip')));
+    const bank=bankOf(act); bank.classList.toggle('empty', !bank.querySelector('.chip'));
+    const sums = act.querySelectorAll('[data-sum]');
+    if(sums.length){
+      const vals={};
+      sums.forEach(s=>{ const bin=s.closest('.bin'); let t=0; bin.querySelectorAll('.chip').forEach(c=>t+=Math.round(parseFloat(c.dataset.amt||0)*100)); vals[s.dataset.sum]=t; s.textContent=fmt(t/100); });
+      const T=Math.round(ACTS[act.dataset.key].target*100); const match = vals.dr===T && vals.cr===T;
+      sums.forEach(s=>s.classList.toggle('match',match));
+      const n=act.querySelector('[data-note]');
+      n.textContent = match ? 'Debits = Credits = '+fmt(T/100) : 'Difference: '+fmt(Math.abs((vals.dr||0)-(vals.cr||0))/100);
+      n.classList.toggle('match',match);
+    }
+  }
+
+  function place(chip, zone){
+    const act = chip.closest('.act');
+    if(zone.classList.contains('slot')){
+      const ex = zone.querySelector('.chip');
+      if(ex && ex!==chip){ const from=chip.parentElement; (from.classList.contains('slot')?from:bankOf(act)).append(ex); }
+    }
+    zone.append(chip);
+    clearMarks(act); update(act); deselect();
+  }
+
+  function check(act){
+    let total=0, ok=0, placed=0, real=0;
+    act.querySelectorAll('.chip').forEach(c=>{
+      c.classList.remove('good','bad');
+      const z=c.parentElement, inBank=z.classList.contains('bank');
+      if(c.dataset.ans==='none'){ if(!inBank){ c.classList.add('bad'); total++; } return; }
+      real++; total++;
+      if(inBank) return;
+      placed++;
+      if(z.dataset.ans===c.dataset.ans){ ok++; c.classList.add('good'); } else c.classList.add('bad');
+    });
+    const fb=act.querySelector('.feedback'), cfg=ACTS[act.dataset.key];
+    const wrongExtra = total-real;
+    if(ok===real && wrongExtra===0){
+      fb.className='feedback ok'; fb.textContent=cfg.win; markDone(act);
+    } else {
+      const left = real-placed;
+      let msg = ok+' of '+real+' correct.';
+      if(left) msg += ' '+left+' still in the bank.';
+      if(act.querySelector('.chip.bad')) msg += ' Red ones are in the wrong place; move them and check again.';
+      if(wrongExtra) msg += ' At least one trap response was placed.';
+      fb.className='feedback no'; fb.textContent=msg;
+    }
+  }
+
+  function reveal(act){
+    const bank=bankOf(act);
+    act.querySelectorAll('.chip').forEach(c=>bank.append(c));
+    act.querySelectorAll('.chip').forEach(c=>{
+      if(c.dataset.ans==='none') return;
+      const zones=[...act.querySelectorAll('.zone[data-ans="'+c.dataset.ans+'"]')];
+      const z = zones.find(z=>z.classList.contains('bin') || !z.querySelector('.chip'));
+      if(z) z.append(c);
+    });
+    clearMarks(act); update(act);
+    act.querySelectorAll('.zone .chip').forEach(c=>c.classList.add('good'));
+    const fb=act.querySelector('.feedback'); fb.className='feedback info';
+    fb.textContent='Answers shown. Study them, then press Reset and try it from memory.';
+  }
+
+  function reset(act){
+    const bank=bankOf(act);
+    shuffle([...act.querySelectorAll('.chip')]).forEach(c=>bank.append(c));
+    clearMarks(act); update(act); deselect();
+  }
+
+  function markDone(act){ const tp=act.closest('.topic'); if(tp) completeTopic(tp.dataset.id); }
+  // selection (tap / keyboard)
+  let selected=null;
+  function deselect(){ if(selected){ selected.classList.remove('selected'); selected.closest('.act').classList.remove('selecting'); } selected=null; }
+  function toggleSelect(chip){
+    if(selected===chip){ deselect(); return; }
+    deselect(); selected=chip; chip.classList.add('selected'); chip.closest('.act').classList.add('selecting');
+  }
+
+  // pointer drag
+  let drag=null, hot=null;
+  function setHot(z){ if(hot===z) return; if(hot) hot.classList.remove('hot'); hot=z; if(hot) hot.classList.add('hot'); }
+  function targetAt(x,y,chip){
+    const e=document.elementFromPoint(x,y); if(!e) return null;
+    const z=e.closest('.zone, .bank');
+    return z && z.closest('.act')===chip.closest('.act') ? z : null;
+  }
+  function endDrag(){
+    if(!drag) return;
+    if(drag.ghost) drag.ghost.remove();
+    drag.chip.classList.remove('lifting'); setHot(null); drag=null;
+  }
+  document.addEventListener('pointerdown',e=>{
+    const chip=e.target.closest('.chip'); if(!chip || e.button!==0) return;
+    drag={chip,x:e.clientX,y:e.clientY,id:e.pointerId,moved:false,ghost:null};
+    try{ chip.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!drag || e.pointerId!==drag.id) return;
+    if(!drag.moved){
+      if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6) return;
+      drag.moved=true;
+      const r=drag.chip.getBoundingClientRect();
+      drag.ox=drag.x-r.left; drag.oy=drag.y-r.top;
+      const g=drag.chip.cloneNode(true); g.classList.remove('selected','good','bad'); g.classList.add('ghost');
+      g.style.width=r.width+'px'; document.body.append(g); drag.ghost=g;
+      drag.chip.classList.add('lifting'); deselect();
+    }
+    drag.ghost.style.transform='translate('+(e.clientX-drag.ox)+'px,'+(e.clientY-drag.oy)+'px)';
+    setHot(targetAt(e.clientX,e.clientY,drag.chip));
+  });
+  document.addEventListener('pointerup',e=>{
+    if(!drag || e.pointerId!==drag.id) return;
+    const d=drag;
+    if(d.moved){ const z=targetAt(e.clientX,e.clientY,d.chip); endDrag(); if(z) place(d.chip,z); }
+    else { endDrag(); toggleSelect(d.chip); }
+  });
+  document.addEventListener('pointercancel',endDrag);
+
+  document.addEventListener('click',e=>{
+    const chip=e.target.closest('.chip');
+    if(chip){ if(e.detail===0) toggleSelect(chip); return; }   // keyboard activation
+    const z=e.target.closest('.zone, .bank');
+    if(z && selected && z.closest('.act')===selected.closest('.act')) place(selected,z);
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape') return deselect();
+    if(e.key!=='Enter' && e.key!==' ') return;
+    const z=e.target.closest && e.target.closest('.zone, .bank');
+    if(z && e.target===z && selected && z.closest('.act')===selected.closest('.act')){ e.preventDefault(); place(selected,z); }
+  });
+
+  Object.keys(ACTS).forEach(build);
+
+  const ORDER = ['vocab', 'endorse', 'stub', 'words', 'rec1', 'rec2', 'journal', 'dish', 'petty', 'replen', 'mix', 'quiz', 'sheet'];
+  const TITLES = {"vocab": "Learn the 6 key words", "endorse": "Endorse a check", "stub": "Fill out a check stub", "words": "Write the amount in words", "rec1": "Decide what goes where", "rec2": "Do the reconciliation math", "journal": "Pick the account to debit", "dish": "Record a dishonored check", "petty": "Build a petty cash report", "replen": "Record a replenish entry", "mix": "Which skill is this?", "quiz": "Practice test", "sheet": "Cheat sheet"};
+  const KEYS = {"vocab": "outstanding deposit check dishonored nsf eft debit card petty cash definition terms words", "endorse": "blank special restrictive signature for deposit only pay to the order of back of check", "stub": "subtotal balance brought forward carried forward deposit amount this check other", "words": "dollars cents and hyphen 05/100 amount in words writing check", "rec1": "reconciliation outstanding void cleared service charge sort bank statement", "rec2": "adjusted bank balance adjusted stub statement formula match reconcile", "journal": "journal entry debit credit memorandum document number miscellaneous expense supplies", "dish": "bounced nsf not sufficient funds accounts receivable fee credit cash memorandum", "petty": "petty cash slips fund short over replenish report count", "replen": "replenish entry cash short and over advertising supplies debit petty cash", "mix": "review mixed connect lessons", "quiz": "quiz checkpoint review test practice mixed", "sheet": "cheat sheet formulas traps summary night before test day"};
+  const topics = {};
+  document.querySelectorAll('.topic').forEach(t=>topics[t.dataset.id]=t);
+  let done = new Set();
+  try{ const s=JSON.parse(localStorage.getItem('ch5sg-done')||'[]'); if(Array.isArray(s)) s.forEach(x=>{ if(topics[x]) done.add(x); }); }catch(_){}
+  function save(){ try{ localStorage.setItem('ch5sg-done', JSON.stringify([...done])); }catch(_){} }
+  function renderProgress(){
+    document.getElementById('prog').textContent = done.size+' of '+ORDER.length+' topics done';
+    document.querySelectorAll('.card').forEach(c=>c.classList.toggle('done', done.has(c.dataset.id)));
+    Object.values(topics).forEach(t=>t.classList.toggle('complete', done.has(t.dataset.id)));
+  }
+  function completeTopic(id){ done.add(id); save(); renderProgress(); }
+
+  function setOpen(t, open){
+    t.classList.toggle('open', open);
+    t.querySelector('.t-body').hidden = !open;
+    t.querySelector('.t-toggle').setAttribute('aria-expanded', String(open));
+  }
+  document.querySelectorAll('.t-toggle').forEach(b=>b.addEventListener('click',()=>setOpen(b.closest('.topic'), !b.closest('.topic').classList.contains('open'))));
+  document.getElementById('expandAll').onclick=()=>Object.values(topics).forEach(t=>setOpen(t,true));
+  document.getElementById('collapseAll').onclick=()=>{ Object.values(topics).forEach(t=>setOpen(t,false)); window.scrollTo(0,0); };
+
+  function goTo(id){
+    const t=topics[id]; if(!t) return false;
+    setOpen(t,true); t.scrollIntoView(); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'),1800);
+    if(id==='sheet') completeTopic('sheet');
+    return true;
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href^="#"]'); if(!a) return;
+    const id=a.getAttribute('href').slice(1);
+    if(topics[id]){ e.preventDefault(); goTo(id); try{ history.replaceState(null,'','#'+id); }catch(_){} clearSearch(); }
+    else if(id==='top'){ e.preventDefault(); window.scrollTo(0,0); try{ history.replaceState(null,'','#top'); }catch(_){} }
+  });
+  window.addEventListener('hashchange',()=>{ const id=location.hash.slice(1); if(topics[id]) goTo(id); });
+
+  // search
+  const q=document.getElementById('q'), res=document.getElementById('results');
+  const INDEX = ORDER.map(id=>{
+    const t=topics[id];
+    const body = [...t.querySelectorAll('.blk.learn, .tipsblk')].map(p=>p.textContent.replace(/\s+/g,' ')).join(' ');
+    const act = [...t.querySelectorAll('.act .act-title, .act .prompt, .act .lab, .act .bin-head h4, .act .chip .t')].map(x=>x.textContent).join(' ').replace(/\s+/g,' ');
+    return {id, title:TITLES[id], keys:KEYS[id], body, all:(TITLES[id]+' '+KEYS[id]+' '+body+' '+act).toLowerCase()};
+  });
+  const wre=w=>new RegExp('\\b'+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  function clearSearch(){ res.hidden=true; res.textContent=''; q.value=''; }
+  function snippet(r, words){
+    const low=r.body.toLowerCase(); let at=-1;
+    for(const w of words){ const i=low.search(wre(w)); if(i>=0){ at=i; break; } }
+    if(at<0) return r.keys.split(' ').slice(0,8).join(', ');
+    const s=Math.max(0,at-40), e=Math.min(r.body.length, at+90);
+    return (s?'…':'')+r.body.slice(s,e)+(e<r.body.length?'…':'');
+  }
+  function mark(el,text,words){
+    const re=new RegExp('('+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','ig');
+    text.split(re).forEach((part,i)=>{ if(i%2){ const m=document.createElement('mark'); m.textContent=part; el.append(m); } else el.append(document.createTextNode(part)); });
+  }
+  function search(){
+    const words=q.value.toLowerCase().split(/\s+/).filter(w=>w.length>1);
+    res.textContent='';
+    if(!words.length){ res.hidden=true; return; }
+    const hits=INDEX.map(r=>{
+      if(!words.every(w=>wre(w).test(r.all))) return null;
+      let score=0; words.forEach(w=>{ if(wre(w).test(r.title.toLowerCase())) score+=10; if(wre(w).test(r.keys)) score+=5; score+=(r.body.toLowerCase().split(w).length-1); });
+      return {r,score};
+    }).filter(Boolean).sort((a,b)=>b.score-a.score).slice(0,6);
+    res.hidden=false;
+    if(!hits.length){ const d=document.createElement('div'); d.className='none'; d.textContent='No match. Try one word, like “void,” “short,” or “subtotal.”'; res.append(d); return; }
+    hits.forEach(({r})=>{
+      const a=document.createElement('a'); a.href='#'+r.id;
+      const b=document.createElement('b'); b.textContent=r.title;
+      const s=document.createElement('small'); mark(s,snippet(r,words),words);
+      a.append(b,s); res.append(a);
+    });
+  }
+  q.addEventListener('input',search);
+  q.addEventListener('keydown',e=>{ if(e.key==='Escape') clearSearch(); if(e.key==='Enter'){ const f=res.querySelector('a'); if(f) f.click(); } });
+  document.addEventListener('click',e=>{ if(!e.target.closest('.search')) res.hidden=true; });
+
+  renderProgress();
+  goTo(location.hash.slice(1));
+})();
+</script>
+
+</head></html>
